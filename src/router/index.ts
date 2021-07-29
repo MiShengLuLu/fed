@@ -1,5 +1,11 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
+import store from '@/store'
+
+// interface RouteMeta {
+//   // 每个路由都必须声明
+//   requiresAuth: boolean
+// }
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -11,6 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     // name: 'home',
     component: Layout,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '/',
@@ -68,6 +75,24 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!store.state.user) {
+      next({
+        name: 'login',
+        query: {
+          redirect: to.fullPath
+        }
+      })
+    } else {
+      next()
+    }
+  } else {
+    // 路由守卫中一定要调用 next，否则页面无法显示
+    next()
+  }
 })
 
 export default router

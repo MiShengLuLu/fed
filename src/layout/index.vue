@@ -5,7 +5,7 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
-        <app-header></app-header>
+        <app-header :collapsed="collapsed" @collapsedChange="collapsedChange"></app-header>
       </a-layout-header>
       <a-layout-content>
         <!-- 子路由出口 -->
@@ -20,17 +20,23 @@ import { defineComponent, ref } from 'vue'
 import AppAside from './components/app-aside.vue'
 import AppHeader from './components/app-header.vue'
 
+function useCollapsed () {
+  const collapsed = ref<boolean>(false)
+  const collapsedChange = (val: boolean) => {
+    collapsed.value = val
+  }
+  return {
+    collapsed,
+    collapsedChange
+  }
+}
+
 export default defineComponent({
   name: 'layout',
   components: { AppAside, AppHeader },
-  data () {
+  setup () {
     return {
-      collapsed: ref<boolean>(false)
-    }
-  },
-  watch: {
-    collapse (val) {
-      console.log(val)
+      ...useCollapsed()
     }
   }
 })

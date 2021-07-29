@@ -6,15 +6,16 @@
     :inline-collapsed="collapsed"
     v-model:openKeys="openKeys"
     v-model:selectedKeys="selectedKeys"
+    @click="handleClick"
   >
     <a-sub-menu key="1">
       <template #icon>
         <InboxOutlined />
       </template>
       <template #title>权限管理</template>
-      <a-menu-item key="1-1">角色列表</a-menu-item>
-      <a-menu-item key="1-2">菜单列表</a-menu-item>
-      <a-menu-item key="1-3">资源列表</a-menu-item>
+      <a-menu-item key="1-1" name="role">角色列表</a-menu-item>
+      <a-menu-item key="1-2" name="menu">菜单列表</a-menu-item>
+      <a-menu-item key="1-3" name="resource">资源列表</a-menu-item>
     </a-sub-menu>
     <a-sub-menu key="2">
       <template #icon>
@@ -43,6 +44,11 @@ import {
   InboxOutlined,
   AppstoreOutlined
 } from '@ant-design/icons-vue'
+import { useRouter } from 'vue-router'
+
+interface Item {
+  name: string
+}
 
 export default defineComponent({
   props: {
@@ -54,11 +60,12 @@ export default defineComponent({
 
   setup (props) {
     const state = reactive({
-      // collapsed: false,
       selectedKeys: ['1-1'],
       openKeys: ['1'],
       preOpenKeys: ['1']
     })
+
+    const $router = useRouter()
 
     watch(
       () => state.openKeys,
@@ -67,13 +74,18 @@ export default defineComponent({
       }
     )
     const toggleCollapsed = () => {
-      // props.collapsed = !props.collapsed
       state.openKeys = props.collapsed ? [] : state.preOpenKeys
+    }
+
+    const handleClick = ({ item, key }: { item: Item, key: string }) => {
+      console.log(item, key)
+      $router.push(`/${item.name}`)
     }
 
     return {
       ...toRefs(state),
-      toggleCollapsed
+      toggleCollapsed,
+      handleClick
     }
   },
   components: {

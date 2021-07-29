@@ -3,9 +3,9 @@
     <menu-unfold-outlined
       v-if="collapsed"
       class="trigger"
-      @click="() => (collapsed = !collapsed)"
+      @click="collapsedChange"
     />
-    <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
+    <menu-fold-outlined v-else class="trigger" @click="collapsedChange" />
     <a-breadcrumb>
       <a-breadcrumb-item>Home</a-breadcrumb-item>
       <a-breadcrumb-item><a href="">Application Center</a></a-breadcrumb-item>
@@ -15,14 +15,14 @@
   </div>
   <a-popover placement="bottomRight">
     <template #content>
-      <p>Content</p>
-      <p>Content</p>
+      <p>{{ userInfo.userName }}</p>
+      <p style="cursor: pointer" @click="logout">退出</p>
     </template>
     <template #title>
       <span>Title</span>
     </template>
     <a-space>
-      <a-avatar shape="square" size="large">
+      <a-avatar shape="square" size="large" :src="userInfo.portrait">
         <template #icon><UserOutlined /></template>
       </a-avatar>
       <DownOutlined />
@@ -31,30 +31,73 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, toRefs, createVNode } from 'vue'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  DownOutlined
+  DownOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons-vue'
+import { getUserInfo } from '@/services/user'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { Modal } from 'ant-design-vue'
+
+function useLogout () {
+  const $store = useStore()
+  const $router = useRouter()
+  const logout = () => {
+    Modal.confirm({
+      title: '退出提示',
+      icon: createVNode(ExclamationCircleOutlined),
+      content: createVNode('div', { style: 'color:red;' }, '确认退出吗？'),
+      onOk () {
+        $store.commit('UPDATE_USER', null)
+        $router.push('/login')
+      },
+      onCancel () {
+        console.log('Cancel')
+      },
+      class: 'test'
+    })
+  }
+  return {
+    logout
+  }
+}
 
 export default defineComponent({
-  // props: {
-  //   collapsed: {
-  //     type: Boolean,
-  //     default: false
-  //   }
-  // },
+  props: {
+    collapsed: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: { MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, DownOutlined },
-  setup () {
+  emits: ['collapsedChange'],
+  setup (props, { emit }) {
     const state = reactive({
-      collapsed: false
+      userInfo: {}
     })
 
-    return {
-      ...toRefs(state)
+    const collapsedChange = () => {
+      emit('collapsedChange', !props.collapsed)
     }
+    const loadInfo = async () => {
+      const { data } = await getUserInfo()
+      state.userInfo = data.content
+    }
+
+    return {
+      ...toRefs(state),
+      loadInfo,
+      ...useLogout(),
+      collapsedChange
+    }
+  },
+  created () {
+    this.loadInfo()
   }
 })
 </script>
