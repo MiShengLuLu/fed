@@ -15,7 +15,7 @@
       <a-input v-model:value="formState.password" type="password" autocomplete="off" />
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-      <a-button type="primary" html-type="submit">登 陆</a-button>
+      <a-button type="primary" html-type="submit" :loading="loading">登 陆</a-button>
     </a-form-item>
   </a-form>
 </template>
@@ -41,6 +41,7 @@ export default defineComponent({
       phone: '18201288771',
       password: '111111'
     })
+    const loading = ref(false)
     const validatePassword = async (rule: RuleObject, value: string) => {
       if (!value) {
         return Promise.reject(new Error('请输入密码'))
@@ -66,6 +67,7 @@ export default defineComponent({
       wrapperCol: { span: 14 }
     }
     const handleFinish = async (values: FormState) => {
+      loading.value = true
       const { data } = await request({
         method: 'post',
         url: '/front/user/login',
@@ -75,6 +77,7 @@ export default defineComponent({
       if (data.state !== 1) {
         return message.warning(data.message)
       }
+      loading.value = false
       $router.push('/')
       message.success('登陆成功')
     }
@@ -86,6 +89,7 @@ export default defineComponent({
       formRef,
       rules,
       layout,
+      loading,
       handleFinishFailed,
       handleFinish
     }
