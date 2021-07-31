@@ -29,7 +29,7 @@ import { useStore } from 'vuex'
 import { login } from '@/services/user'
 
 interface FormState {
-  phone: string
+  phone: string;
   password: string
 }
 export default defineComponent({

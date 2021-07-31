@@ -1,0 +1,25 @@
+.main-container {
+  background: #ececec;
+  padding: 16px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.ant-card,
+.ant-table-wrapper,
+.ant-spin-nested-loading,
+.ant-spin-container {
+  height: 100%;
+}
+.ant-card-body {
+  height: calc(100% - 65px);
+  padding-bottom: 0;
+}
+.ant-table {
+  padding-bottom: 64px;
+}
+.ant-pagination {
+  position: fixed;
+  right: 40px;
+  bottom: 16px;
+}

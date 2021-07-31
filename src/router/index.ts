@@ -2,11 +2,6 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import store from '@/store'
 
-// interface RouteMeta {
-//   // 每个路由都必须声明
-//   requiresAuth: boolean
-// }
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
@@ -33,6 +28,16 @@ const routes: Array<RouteRecordRaw> = [
         path: '/menu',
         name: 'menu',
         component: () => import(/* webpackChunkName: "menu" */ '@/views/menu/index.vue')
+      },
+      {
+        path: '/menu/create',
+        name: 'menuCreate',
+        component: () => import(/* webpackChunkName: "menu-update" */ '@/views/menu/create.vue')
+      },
+      {
+        path: '/menu/:id/edit',
+        name: 'menuEdit',
+        component: () => import(/* webpackChunkName: "menu-update" */ '@/views/menu/create.vue')
       },
       {
         path: '/resource',

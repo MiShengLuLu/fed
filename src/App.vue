@@ -10,8 +10,8 @@ import { defineComponent } from 'vue'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 
 interface Book {
-  title: string
-  author: string
+  title: string;
+  author: string;
   year: number
 }
 

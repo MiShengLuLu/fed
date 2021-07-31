@@ -17,8 +17,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import AppAside from './components/app-aside.vue'
-import AppHeader from './components/app-header.vue'
+import AppAside from '@/components/app-aside.vue'
+import AppHeader from '@/components/app-header.vue'
 
 function useCollapsed () {
   const collapsed = ref<boolean>(false)
@@ -52,5 +52,13 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.ant-layout-content {
+  height: calc(100% - 64px);
+}
+
+:deep(.ant-layout-sider-trigger) {
+  position: absolute;
 }
 </style>
