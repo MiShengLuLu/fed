@@ -25,6 +25,10 @@ interface GetCategory extends Result {
   data: Array<CategoryItem>
 }
 
+interface GetRoleResources extends Result {
+  data: ResourcesItem[]
+}
+
 // 获取所有资源
 export const getAll = (): Promise<{ data: GetAll }> => {
   return request({
@@ -95,5 +99,15 @@ export const allocateRoleResources = (data: AllocateRoleResources): Promise<{ da
     method: 'post',
     url: '/boss/resource/allocateRoleResources',
     data
+  })
+}
+// 获取角色拥有的资源列表
+export const getRoleResources = (roleId: number): Promise<{ data: GetRoleResources }> => {
+  return request({
+    method: 'get',
+    url: '/boss/resource/getRoleResources',
+    params: {
+      roleId
+    }
   })
 }

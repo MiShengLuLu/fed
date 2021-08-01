@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive, toRefs } from 'vue'
-import { getCategory, getAll, allocateRoleResources } from '@/services/resources'
+import { getCategory, getAll, allocateRoleResources, getRoleResources } from '@/services/resources'
 import { CategoryItem, ResourcesItem } from '@/types/resources'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
@@ -66,7 +66,6 @@ export default defineComponent({
     const state = reactive({
       categories: ref<CategoryItem[]>([]),
       resources: ref<ResourcesItem[]>([]),
-      indeterminate: true,
       checkAll: false,
       resourceIdList: ref<number[]>([])
     })
@@ -142,11 +141,27 @@ export default defineComponent({
         message.error(data.mesg)
       }
     }
+    // 获取角色拥有的资源列表
+    const loadRoleResources = async () => {
+      const { data } = await getRoleResources(Number(props.roleId))
+      if (data.code === '000000') {
+        data.data.forEach((item: ResourcesItem) => {
+          if (item.id) {
+            state.resourceIdList.push(item.id)
+            const i = state.resources.findIndex(r => r.id === item.id)
+            if (i > -1) {
+              state.resources[i].selected = true
+            }
+          }
+        })
+      }
+    }
 
     return {
       ...toRefs(state),
       getAllCategory,
       loadAllResource,
+      loadRoleResources,
       onCheckAllChange,
       onChange,
       onSubmit
@@ -155,6 +170,7 @@ export default defineComponent({
   created () {
     this.getAllCategory()
     this.loadAllResource()
+    this.loadRoleResources()
   }
 })
 </script>

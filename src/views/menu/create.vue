@@ -125,4 +125,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import url('../../styles/index.scss');
+.ant-card {
+  height: 100%;
+}
+.ant-card-body {
+  height: calc(100% - 65px);
+  padding-bottom: 0;
+}
 </style>
