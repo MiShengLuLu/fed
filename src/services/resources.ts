@@ -1,7 +1,10 @@
 import request from '@/utils/request'
-import { FormState, ResourcesItem } from '@/types/resources'
-import { Result } from '@/types/base'
+import { ResourcesItem, CategoryItem, AllocateRoleResources } from '@/types/resources'
+import { Result, Pagination } from '@/types/base'
 
+interface GetAll extends Result {
+  data: ResourcesItem[]
+}
 interface GetAllResources extends Result {
   data: {
     pages: number;
@@ -12,21 +15,51 @@ interface GetAllResources extends Result {
     current: number
   }
 }
-
-interface GetCategory extends Result {
-  data: Array<ResourcesItem>
+interface GetResource extends Result {
+  data: ResourcesItem
 }
-
-interface UpdateResource extends Result {
+interface Update extends Result {
   data: boolean
 }
+interface GetCategory extends Result {
+  data: Array<CategoryItem>
+}
 
-// 更新分页查询资源列表
-export const getResourcePages = (data: FormState): Promise<{ data: GetAllResources}> => {
+// 获取所有资源
+export const getAll = (): Promise<{ data: GetAll }> => {
+  return request({
+    method: 'get',
+    url: '/boss/resource/getAll'
+  })
+}
+// 根据分页查询资源列表
+export const getResourcePages = (data: ResourcesItem & Pagination): Promise<{ data: GetAllResources}> => {
   return request({
     method: 'post',
     url: '/boss/resource/getResourcePages',
     data
+  })
+}
+// 删除资源
+export const deleteResource = (id: number): Promise<{ data: Update}> => {
+  return request({
+    method: 'delete',
+    url: `/boss/resource/${id}`
+  })
+}
+// 更新资源信息
+export const updateResource = (data: ResourcesItem): Promise<{ data: Update }> => {
+  return request({
+    method: 'post',
+    url: '/boss/resource/saveOrUpdate',
+    data
+  })
+}
+// 根据 id 查询资源信息
+export const getResourceById = (id: number): Promise<{ data: GetResource}> => {
+  return request({
+    method: 'get',
+    url: `/boss/resource/${id}`
   })
 }
 
@@ -40,20 +73,27 @@ export const getCategory = (resourceId?: number): Promise<{ data: GetCategory }>
     }
   })
 }
-
-// 删除资源
-export const deleteResource = (id: number): Promise<{ data: UpdateResource}> => {
+// 更新资源分类信息
+export const updateCategory = (data: CategoryItem): Promise<{ data: Update }> => {
+  return request({
+    method: 'post',
+    url: '/boss/resource/category/saveOrderUpdate',
+    data
+  })
+}
+// 删除资源分类项，如果资源分类项还有子分类项，不允许删除
+export const deleteCategory = (id: number): Promise<{ data: Update }> => {
   return request({
     method: 'delete',
-    url: `/boss/resource/${id}`
+    url: `/boss/resource/category/${id}`
   })
 }
 
-// 更新资源信息
-export const updateResource = (data: FormState): Promise<{ data: UpdateResource }> => {
+// 给角色分配资源
+export const allocateRoleResources = (data: AllocateRoleResources): Promise<{ data: Update }> => {
   return request({
     method: 'post',
-    url: '/boss/resource/saveOrUpdate',
+    url: '/boss/resource/allocateRoleResources',
     data
   })
 }

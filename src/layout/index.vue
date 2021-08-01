@@ -44,7 +44,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ant-layout {
-  min-height: 100vh;
+  height: 100vh;
   min-width: 980px;
 }
 

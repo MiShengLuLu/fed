@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { FormState } from '@/types/menu'
+import { FormState, MenuItem } from '@/types/menu'
 import { Result } from '@/types/base'
 
 interface MenuUpdate extends Result {
@@ -15,6 +15,10 @@ interface GetEditMenu extends Result {
 
 interface GetAllMenus extends Result {
   data: Array<FormState>
+}
+
+interface GetMenuNodeList extends Result {
+  data: Array<MenuItem>
 }
 
 // 更新菜单
@@ -48,5 +52,35 @@ export const menuDelete = (id: number): Promise<{ data: MenuUpdate }> => {
   return request({
     method: 'delete',
     url: `/boss/menu/${id}`
+  })
+}
+
+// 查询所有菜单并按层级展示
+export const getMenuNodeList = (): Promise<{ data: GetMenuNodeList }> => {
+  return request({
+    method: 'get',
+    url: '/boss/menu/getMenuNodeList'
+  })
+}
+
+// 给角色分配菜单
+export const allocateRoleMenus = (data: {
+  roleId: number | string;
+  menuIdList: number[]
+}): Promise<{ data: MenuUpdate }> => {
+  return request({
+    method: 'post',
+    url: '/boss/menu/allocateRoleMenus',
+    data
+  })
+}
+// 获取角色拥有的菜单
+export const getRoleMenus = (roleId: number | string): Promise<{ data: GetMenuNodeList }> => {
+  return request({
+    method: 'get',
+    url: '/boss/menu/getRoleMenus',
+    params: {
+      roleId
+    }
   })
 }

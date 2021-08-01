@@ -29,19 +29,20 @@
             <a-button
               type="primary"
               @click="getResources"
+              :disabled="loading"
             >
               查询
             </a-button>
             <a-divider type="vertical" />
-            <a-button @click="onReset">
+            <a-button @click="onReset" :disabled="loading">
               重置
             </a-button>
           </a-form-item>
         </a-form>
       </template>
-      <a-button @click="() => { modalTitle = '添加资源'; showModal() }" :disabled="loading">添加</a-button>
+      <a-button @click="addResource" :disabled="loading">添加</a-button>
       <a-divider type="vertical" />
-      <a-button @click="$router.push('/resources/create')" :disabled="loading">资源分类</a-button>
+      <a-button @click="$router.push('/category')">资源分类</a-button>
       <a-table
         :columns="columns"
         :data-source="resources"
@@ -52,7 +53,7 @@
       >
         <template #action="{ record }">
           <span>
-            <a @click="editResource(record)">编辑</a>
+            <a @click="editResource(record.id)">编辑</a>
             <a-divider type="vertical" />
             <a-popconfirm
               v-if="resources.length"
@@ -87,25 +88,27 @@
     v-model:visible="visible"
     :confirm-loading="confirmLoading"
     @ok="handleOk"
+    @cancel="cancel"
   >
     <a-form
       ref="formRef"
       :model="form"
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
+      :rules="rules"
     >
         <a-form-item label="资源名称" required name="name">
           <a-input v-model:value="form.name" />
         </a-form-item>
-        <a-form-item label="资源路径" required name="name">
+        <a-form-item label="资源路径" required name="url">
           <a-input v-model:value="form.url" />
         </a-form-item>
-        <a-form-item label="角色管理" required name="name">
+        <a-form-item label="角色管理" required name="categoryId">
           <a-select v-model:value="form.categoryId">
             <a-select-option v-for="item in category" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="描述" name="name">
+        <a-form-item label="描述" name="description">
           <a-textarea v-model:value="form.description" />
         </a-form-item>
       </a-form>
@@ -113,8 +116,9 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { getCategory, getResourcePages, deleteResource, updateResource } from '@/services/resources'
-import { ResourcesItem, FormState } from '@/types/resources'
+import { getCategory, getResourcePages, deleteResource, updateResource, getResourceById } from '@/services/resources'
+import { ResourcesItem, CategoryItem } from '@/types/resources'
+import { Pagination } from '@/types/base'
 import { message } from 'ant-design-vue'
 
 const columns = [
@@ -139,7 +143,7 @@ const columns = [
     dataIndex: 'createdTime'
   },
   {
-    title: 'Action',
+    title: '操作',
     key: 'action',
     width: 200,
     fixed: 'right',
@@ -162,6 +166,13 @@ const init = {
     description: ''
   }
 }
+
+const rules = {
+  name: [{ required: true, message: '请输入资源名称' }],
+  url: [{ required: true, message: '请输入资源路径' }],
+  categoryId: [{ required: true, message: '请选择角色管理' }]
+}
+
 export default defineComponent({
   name: 'Resources',
   data () {
@@ -170,9 +181,9 @@ export default defineComponent({
     }
   },
   setup () {
-    const formState = ref<FormState>(init.inlineForm)
+    const formState = ref<ResourcesItem & Pagination>(init.inlineForm)
 
-    const category = ref<ResourcesItem[]>([])
+    const category = ref<CategoryItem[]>([])
     const resources = ref<ResourcesItem[]>([])
     const total = ref(0)
     const loading = ref(false)
@@ -188,27 +199,50 @@ export default defineComponent({
     }
 
     const modalTitle = ref<string>()
-    const isEdit = ref(false)
     const visible = ref<boolean>(false)
     const confirmLoading = ref<boolean>(false)
-    const form = ref<FormState>(init.form)
+    const form = ref<ResourcesItem>(init.form)
+    const formRef = ref()
 
-    const showModal = () => {
+    const addResource = () => {
+      modalTitle.value = '添加资源'
       visible.value = true
-      form.value = init.form
     }
     const handleOk = async () => {
-      confirmLoading.value = true
-      const { data } = await updateResource(form.value)
-      if (data.code === '000000') {
-        message.success(data.mesg)
-        // 如果是新增，需刷新列表数据
-        if (!isEdit.value) getResources()
-        visible.value = false
-      } else {
-        message.error(data.mesg)
+      try {
+        await formRef.value.validate()
+        confirmLoading.value = true
+        const { data } = await updateResource(form.value)
+        if (data.code === '000000') {
+          message.success(data.mesg)
+          // 刷新列表数据
+          getResources()
+          visible.value = false
+          cancel()
+        } else {
+          message.error(data.mesg)
+        }
+        confirmLoading.value = false
+      } catch (error) {
+        console.error(error)
       }
-      confirmLoading.value = false
+    }
+
+    // 编辑
+    const editResource = async (id: number) => {
+      modalTitle.value = '编辑资源'
+      const { data } = await getResourceById(id)
+      visible.value = true
+      if (data.code === '000000') {
+        form.value = data.data
+      }
+    }
+    // 模态框关闭之后的回调
+    const cancel = () => {
+      // 重置对话框内表单数据
+      form.value = init.form
+      // 清除校验
+      formRef.value.clearValidate()
     }
     return {
       resources,
@@ -221,21 +255,24 @@ export default defineComponent({
       modalTitle,
       visible,
       confirmLoading,
-      showModal,
+      addResource,
       handleOk,
+      formRef,
       form,
+      rules,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      isEdit
+      cancel,
+      editResource
     }
   },
   created () {
     this.loadCategory()
     this.getResources()
   },
-  async mounted () {
+  mounted () {
     this.tableScrollCalculate()
-    window.addEventListener('resize', async () => {
+    window.addEventListener('resize', () => {
       this.tableScrollCalculate()
     })
   },
@@ -254,12 +291,6 @@ export default defineComponent({
       } else {
         message.error('删除失败了，请稍后再试')
       }
-    },
-    editResource (data: FormState) {
-      this.isEdit = true
-      this.modalTitle = '编辑资源'
-      this.showModal()
-      this.form = data
     },
     tableScrollCalculate () {
       const el = document.querySelector('.ant-spin-container')
@@ -296,7 +327,9 @@ export default defineComponent({
   margin-bottom: 20px;
 }
 .ant-pagination {
-  margin-bottom: 20px;
   z-index: 1;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }
 </style>

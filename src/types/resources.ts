@@ -1,24 +1,21 @@
-export interface FormState {
-  id?: number;
-  name: string;
-  url: string;
-  categoryId: number | null;
-  description?: string;
-  current?: number;
-  size?: number
-}
-
 export interface ResourcesItem {
-  name: string;
-  categoryId?: number;
-  sort?: number;
-  id: number;
-  createdBy: string;
+  name?: string;
+  categoryId?: number | null;
+  id?: number;
   url?: string;
   description?: string;
-  updatedBy: string;
-  createdTime: Date;
-  selected: boolean;
-  updatedTime: Date;
-  operatorId: number
+  selected?: boolean
+}
+
+export interface CategoryItem {
+  id?: number;
+  name?: string;
+  sort?: number | null;
+  createdTime?: Date,
+  selected?: boolean
+}
+
+export interface AllocateRoleResources {
+  roleId: number;
+  resourceIdList: number[]
 }

@@ -25,6 +25,18 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "role" */ '@/views/role/index.vue')
       },
       {
+        path: '/role/:roleId/allocMenu',
+        name: 'allocMenu',
+        component: () => import(/* webpackChunkName: "allocMenu" */ '@/views/role/allocMenu.vue'),
+        props: true// 将路由路径参数映射到组件的 props 选项中 —— 推荐使用
+      },
+      {
+        path: '/role/:roleId/allocResource',
+        name: 'allocResource',
+        component: () => import(/* webpackChunkName: "allocResource" */'@/views/role/allocResource.vue'),
+        props: true
+      },
+      {
         path: '/menu',
         name: 'menu',
         component: () => import(/* webpackChunkName: "menu" */ '@/views/menu/index.vue')
@@ -43,6 +55,11 @@ const routes: Array<RouteRecordRaw> = [
         path: '/resource',
         name: 'resource',
         component: () => import(/* webpackChunkName: "resource" */ '@/views/resource/index.vue')
+      },
+      {
+        path: '/category',
+        name: 'category',
+        component: () => import(/* webpackChunkName: "category" */ '@/views/resource/category.vue')
       },
       {
         path: '/course',

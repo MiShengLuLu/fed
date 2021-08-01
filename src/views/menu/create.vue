@@ -1,14 +1,15 @@
 <template>
   <div class="main-container">
-    <a-card title="添加菜单" :bordered="false">
-      <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-form-item label="菜单名称">
+    <a-card :bordered="false">
+      <template #title>{{ $route.name === 'menuEdit' ? '编辑菜单' : '添加菜单' }}</template>
+      <a-form ref="formRef" :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol" :rules="rules">
+        <a-form-item label="菜单名称" required name="name">
           <a-input v-model:value="formState.name" />
         </a-form-item>
-        <a-form-item label="菜单路径">
+        <a-form-item label="菜单路径" required name="href">
           <a-input v-model:value="formState.href" />
         </a-form-item>
-        <a-form-item label="上级菜单">
+        <a-form-item label="上级菜单" required name="parentId">
           <a-select v-model:value="formState.parentId" placeholder="请选择上级菜单">
             <a-select-option value="-1">无上一级菜单</a-select-option>
             <a-select-option v-for="menu in parentMenuList" :key="menu.id" :value="menu.id">{{ menu.name }}</a-select-option>
@@ -63,38 +64,43 @@ const menuItem = {
   orderNum: null
 }
 
+const rules = {
+  name: [{ required: true, message: '请输入菜单名称' }],
+  href: [{ required: true, message: '请输入菜单路径' }],
+  parentId: [{ required: true, message: '请选择上一级菜单' }]
+}
+
 export default defineComponent({
   components: { MinusOutlined, PlusOutlined },
   setup () {
-    // const formState: UnwrapRef<FormState> = reactive({
-    //   name: '',
-    //   href: '',
-    //   parentId: -1,
-    //   description: '',
-    //   icon: '',
-    //   shown: false,
-    //   orderNum: null
-    // })
     const formState = ref<FormState>(menuItem)
+    const formRef = ref()
 
     const $router = useRouter()
     const $route = useRoute()
     const onSubmit = async () => {
-      if ($route.name === 'menuEdit') {
-        formState.value.id = Number($route.params.id)
-      }
-      const { data } = await menuUpdate(formState.value)
-      if (data.code === '000000') {
-        message.success(data.mesg)
-        $router.back()
-      } else {
-        message.error(data.mesg)
+      try {
+        await formRef.value.validate()
+        if ($route.name === 'menuEdit') {
+          formState.value.id = Number($route.params.id)
+        }
+        const { data } = await menuUpdate(formState.value)
+        if (data.code === '000000') {
+          message.success(data.mesg)
+          $router.back()
+        } else {
+          message.error(data.mesg)
+        }
+      } catch (error) {
+        console.error(error)
       }
     }
 
     const parentMenuList = ref<FormState[]>([])
 
     return {
+      formRef,
+      rules,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       formState,
@@ -119,8 +125,4 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import url('../../styles/index.scss');
-
-.ant-card {
-  height: 100%;
-}
 </style>

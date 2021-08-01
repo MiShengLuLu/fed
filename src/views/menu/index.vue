@@ -119,7 +119,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import url('../../styles/index.scss');
 
-.ant-popover-inner-content {
-  min-width: 200px;
+:deep(.ant-pagination) {
+  z-index: 1;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 </style>

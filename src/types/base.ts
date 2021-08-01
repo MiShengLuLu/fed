@@ -9,3 +9,8 @@ export interface Result {
   mesg: string;
   time: number
 }
+
+export interface Pagination {
+  current: number;
+  size: number
+}
