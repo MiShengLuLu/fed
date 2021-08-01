@@ -27,7 +27,7 @@
       <div class="footer-container">
         <a-button type="primary" @click="onSubmit">保存</a-button>
         <a-divider type="vertical" />
-        <a-button @click="resourceIdList = []">清空</a-button>
+        <a-button @click="clear">清空</a-button>
         <a-divider type="vertical" />
         <a-button @click="$router.back()">
           <template #icon><ArrowLeftOutlined /></template>
@@ -156,6 +156,15 @@ export default defineComponent({
         })
       }
     }
+    // 清空
+    const clear = () => {
+      state.resourceIdList = []
+      state.resources.forEach(item => {
+        if (item.selected) {
+          item.selected = false
+        }
+      })
+    }
 
     return {
       ...toRefs(state),
@@ -164,7 +173,8 @@ export default defineComponent({
       loadRoleResources,
       onCheckAllChange,
       onChange,
-      onSubmit
+      onSubmit,
+      clear
     }
   },
   created () {
