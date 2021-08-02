@@ -25,14 +25,12 @@
       <a-menu-item key="2-1">Option 9</a-menu-item>
       <a-menu-item key="2-2">Option 10</a-menu-item>
     </a-sub-menu>
-    <a-sub-menu key="3">
+    <a-menu-item key="3" name="user">
       <template #icon>
         <PieChartOutlined />
       </template>
-      <template #title>用户管理</template>
-      <a-menu-item key="3-1">Option 9</a-menu-item>
-      <a-menu-item key="3-2">Option 10</a-menu-item>
-    </a-sub-menu>
+      用户管理
+    </a-menu-item>
   </a-menu>
 </template>
 <script lang="ts">
@@ -51,6 +49,7 @@ interface Item {
 }
 
 export default defineComponent({
+  naem: 'AppAside',
   props: {
     collapsed: {
       type: Boolean,

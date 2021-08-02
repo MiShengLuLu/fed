@@ -4,7 +4,13 @@
       <template #title>
         <a-button @click="$router.push('/menu/create')">添加菜单</a-button>
       </template>
-      <a-table :columns="columns" :data-source="menus" rowKey="id" :scroll="{ x: 1000, y: scrollY }">
+      <a-table
+        :columns="columns"
+        :data-source="menus"
+        rowKey="id"
+        :scroll="{ x: 1000, y: scrollY }"
+        :loading="loading"
+      >
         <template #index="{ record }">
           <a>{{ record }}</a>
         </template>
@@ -27,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { getAllMenus, menuDelete } from '@/services/menu'
 import { FormState } from '@/types/menu'
 import { message } from 'ant-design-vue'
@@ -76,7 +82,11 @@ export default defineComponent({
   },
   setup () {
     const menus = ref<FormState[]>([])
+    const state = reactive({
+      loading: false
+    })
     return {
+      ...toRefs(state),
       menus,
       columns
     }
@@ -118,17 +128,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import url('../../styles/index.scss');
-.ant-card,
-.ant-table-wrapper,
-:deep(.ant-spin-nested-loading),
-:deep(.ant-spin-container) {
+.ant-card {
   height: 100%;
 }
 :deep(.ant-card-body) {
   height: calc(100% - 65px);
   padding-bottom: 0;
 }
-.ant-table {
+:deep(.ant-table) {
   padding-bottom: 64px;
 }
 

@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs'
-import { Content, RefreshContent } from '@/types/user'
-import { frontResult } from '@/types/base'
+import { Content, RefreshContent, UserItem, QueryUser } from '@/types/user'
+import { frontResult, Result } from '@/types/base'
 
 interface User {
   phone: string;
@@ -16,6 +16,19 @@ interface UserInfo extends frontResult {
 
 interface RefreshToken extends frontResult {
   content: RefreshContent
+}
+
+interface GetUserPage extends Result {
+  data: {
+    records: UserItem[],
+    total: number
+  }
+}
+
+interface ChangeUserStatus extends Result {
+  data: {
+    status: boolean
+  }
 }
 
 // 登陆
@@ -45,5 +58,36 @@ export const refreshToken = (data: User): Promise<{ data: RefreshToken }> => {
     method: 'post',
     url: '/front/user/refresh_token',
     data: qs.stringify(data)
+  })
+}
+
+// 根据条件查询获取用户列表
+export const getUserPage = (data: QueryUser): Promise<{ data: GetUserPage }> => {
+  return request({
+    method: 'post',
+    url: '/boss/user/getUserPages',
+    data
+  })
+}
+
+// 禁用用户
+export const forbidUser = (userId: number): Promise<{ data: ChangeUserStatus}> => {
+  return request({
+    method: 'post',
+    url: '/boss/user/forbidUser',
+    data: {
+      userId
+    }
+  })
+}
+
+// 启用用户
+export const enableUser = (userId: number): Promise<{ data: ChangeUserStatus }> => {
+  return request({
+    method: 'get',
+    url: '/boss/user/enableUser',
+    params: {
+      userId
+    }
   })
 }

@@ -13,6 +13,10 @@ interface Update extends Result {
   data: boolean
 }
 
+interface GetAllRole extends Result {
+  data: Role[]
+}
+
 interface GetRole extends Result {
   data: Role
 }
@@ -61,5 +65,30 @@ export const getRoleMenus = (params: { roleId: number }): Promise<{ data: GetMen
     method: 'get',
     url: '/boss/menu/getRoleMenus',
     params
+  })
+}
+
+// 获取所有角色
+export const getRoles = (): Promise<{ data: GetAllRole }> => {
+  return request({
+    method: 'get',
+    url: '/boss/role/all'
+  })
+}
+
+// 给用户分配角色
+export const allocateUserRoles = (data: { userId: number; roleIdList: number[] }): Promise<{ data: Update}> => {
+  return request({
+    method: 'post',
+    url: '/boss/role/allocateUserRoles',
+    data
+  })
+}
+
+// 查询用户角色
+export const getRolesById = (userId: number): Promise<{ data: GetAllRole }> => {
+  return request({
+    method: 'get',
+    url: `/boss/role/user/${userId}`
   })
 }

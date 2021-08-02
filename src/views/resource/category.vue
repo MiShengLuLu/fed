@@ -195,17 +195,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import url('../../styles/index.scss');
-.ant-card,
-.ant-table-wrapper,
-:deep(.ant-spin-nested-loading),
-:deep(.ant-spin-container) {
+.ant-card {
   height: 100%;
 }
 :deep(.ant-card-body) {
   height: calc(100% - 65px);
   padding-bottom: 0;
 }
-.ant-table {
+:deep(.ant-table) {
   padding-bottom: 64px;
 }
 :deep(.ant-pagination) {

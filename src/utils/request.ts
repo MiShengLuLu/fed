@@ -22,6 +22,7 @@ request.interceptors.request.use(function (config) {
 })
 
 let isRefreshing = false
+// eslint-disable-next-line
 let requests: any[] = []
 // Add a response interceptor
 request.interceptors.response.use(function (response) {
