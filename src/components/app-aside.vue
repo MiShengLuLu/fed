@@ -17,14 +17,12 @@
       <a-menu-item key="1-2" name="menu">菜单列表</a-menu-item>
       <a-menu-item key="1-3" name="resource">资源列表</a-menu-item>
     </a-sub-menu>
-    <a-sub-menu key="2">
+    <a-menu-item key="2" name="course">
       <template #icon>
         <AppstoreOutlined />
       </template>
-      <template #title>课程管理</template>
-      <a-menu-item key="2-1">Option 9</a-menu-item>
-      <a-menu-item key="2-2">Option 10</a-menu-item>
-    </a-sub-menu>
+      课程管理
+    </a-menu-item>
     <a-menu-item key="3" name="user">
       <template #icon>
         <PieChartOutlined />
