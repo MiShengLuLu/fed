@@ -34,6 +34,8 @@
             <a-button @click="onReset" :disabled="loading">
               重置
             </a-button>
+            <a-divider type="vertical" />
+            <a-button @click="$router.push('/course/add')" danger>新增课程</a-button>
           </a-form-item>
         </a-form>
       </template>
@@ -57,7 +59,12 @@
           <span>
             <a>Invite 一 {{ record.name }}</a>
             <a-divider type="vertical" />
-            <a @click="$router.push('/course/add')">新增课程</a>
+            <a @click="$router.push({
+              name: 'courseEdit',
+              params: {
+                courseId: record.id
+              }
+            })">编辑</a>
           </span>
         </template>
       </a-table>

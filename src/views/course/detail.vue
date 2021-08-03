@@ -52,29 +52,18 @@
           <a-form-item label="讲师简介" name="teacherDTO.description" required>
             <a-textarea v-model:value="formState.teacherDTO.description" />
           </a-form-item>
-          <a-form-item label="课程概述" name="courseDescriptionMarkDown" required>
-            <a-input v-model:value="formState.courseDescriptionMarkDown" />
-            <!-- <a-input v-model:value="formState.courseName" /> -->
+          <a-form-item label="课程名称" name="previewFirstField" required>
+            <a-input v-model:value="formState.previewFirstField" />
           </a-form-item>
-          <!-- <a-form-item>
-            <a-upload
-              v-model:file-list="fileList"
-              name="avatar"
-              list-type="picture-card"
-              class="avatar-uploader"
-              :show-upload-list="false"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              :before-upload="beforeUpload"
-              @change="handleChange"
-            >
-              <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-              <div v-else>
-                <loading-outlined v-if="loading"></loading-outlined>
-                <plus-outlined v-else></plus-outlined>
-                <div class="ant-upload-text">Upload</div>
-              </div>
-            </a-upload>
-          </a-form-item> -->
+          <a-form-item label="课程概述" name="previewSecondField" required>
+            <a-input v-model:value="formState.previewSecondField" />
+          </a-form-item>
+          <a-form-item label="课程封面">
+            <avatar-upload v-model="formState.courseListImg" />
+          </a-form-item>
+          <a-form-item label="介绍封面">
+            <avatar-upload v-model="formState.courseImgUrl" />
+          </a-form-item>
           <a-form-item label="课程排序" name="sortNum" required>
             <a-input v-model:value="formState.sortNum">
               <template #addonBefore>
@@ -108,14 +97,14 @@
             <a-form-item label="开始时间" name="activityCourseDTO.beginTime">
               <a-date-picker
                 v-model:value="formState.activityCourseDTO.beginTime"
-                format="YYYY-MM-DD HH:mm:ss"
+                format="YYYY-MM-DD"
                 placeholder="选择日期时间"
               />
             </a-form-item>
             <a-form-item label="结束时间" name="activityCourseDTO.endTime">
               <a-date-picker
                 v-model:value="formState.activityCourseDTO.endTime"
-                format="YYYY-MM-DD HH:mm:ss"
+                format="YYYY-MM-DD"
                 placeholder="选择日期时间"
               />
             </a-form-item>
@@ -128,89 +117,95 @@
           </template>
         </template>
         <template v-if="current === 3">
-          div
+          <editor v-model="formState.courseDescriptionMarkDown" />
         </template>
       </a-form>
       <div class="foot-container">
-        <a-button v-if="current < 3">下一步</a-button>
+        <a-button v-if="current < 3" @click="current++">下一步</a-button>
         <a-divider type="vertical" />
-        <a-button v-if="current > 0">上一步</a-button>
+        <a-button v-if="current > 0" @click="current--">上一步</a-button>
         <a-divider type="vertical" />
-        <a-button type="primary" v-if="current === 3">确认</a-button>
+        <a-button type="primary" v-if="current === 3" @click="onSubmit">确认</a-button>
       </div>
     </a-card>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, UnwrapRef, ref } from 'vue'
+import { defineComponent, reactive, toRefs, ref } from 'vue'
 import { ArrowLeftOutlined, EditOutlined, AreaChartOutlined, AccountBookOutlined, ContainerOutlined } from '@ant-design/icons-vue'
+import { FormState } from '@/types/courses'
+import AvatarUpload from '@/components/AvatarUpload.vue'
+// import editor from '@/components/quillEditor.vue'
+import editor from '@/components/ckEditor.vue'
+import { saveOrUpdateCourse, getCourseById } from '@/services/courses'
+import { message } from 'ant-design-vue'
+import { useRoute } from 'vue-router'
+import moment from 'moment'
 
-const rules = [
-  {
-    courseName: [
-      { required: true, message: '请输入课程名称' },
-      { max: 50, message: '课程名称长度不能超过50' }
-    ],
-    brief: [
-      { required: true, max: 100, message: '请输入课程简介' },
-      { max: 100, message: '课程简介长度不能超过100' }
-    ],
-    teacherDTO: {
-      teacherName: [
-        { required: true, message: '请输入讲师姓名' },
-        { max: 50, message: '讲师名称长度不能超过50' }
-      ],
-      position: [
-        { required: true, max: 50, message: '请输入讲师职位' },
-        { max: 50, message: '讲师职位长度不能超过50' }
-      ],
-      description: [
-        { required: true, message: '请输入讲师简介' },
-        { max: 100, message: '讲师简介长度不能超过100' }
-      ]
-    },
-    sortNum: [
-      { required: true, message: '请输入课程排序' },
-      { pattern: /^[0-9]\d*$/, message: '请输入大于等于0的整数' }
-    ],
-    discounts: [
-      { required: true, message: '请输入售卖价格' },
-      { pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/, message: '价格格式不正确' }
-    ]
-  }
-]
-
-interface FormState {
-  courseName: string;
-  brief: string;
+const rules = {
+  courseName: [
+    { required: true, message: '请输入课程名称' },
+    { max: 50, message: '课程名称长度不能超过50' }
+  ],
+  brief: [
+    { required: true, max: 100, message: '请输入课程简介' },
+    { max: 100, message: '课程简介长度不能超过100' }
+  ],
   teacherDTO: {
-    teacherName: string;
-    position: string;
-    description: string
+    teacherName: [
+      { required: true, message: '请输入讲师姓名' },
+      { max: 50, message: '讲师名称长度不能超过50' }
+    ],
+    position: [
+      { required: true, max: 50, message: '请输入讲师职位' },
+      { max: 50, message: '讲师职位长度不能超过50' }
+    ],
+    description: [
+      { required: true, message: '请输入讲师简介' },
+      { max: 100, message: '讲师简介长度不能超过100' }
+    ]
   },
-  sortNum: number | null;
-  discounts: number | null;
-  price?: number | null;
-  sales?: number | null;
-  discountsTag?: string;
-  activityCourse?: boolean;
-  activityCourseDTO: {
-    beginTime?: string;
-    endTime?: string;
-    amount?: number | null;
-    stock?: number | null
-  }
+  previewFirstField: [
+    { required: true, message: '请输入课程名称' },
+    { max: 20, message: '课程名称长度不能超过20' }
+  ],
+  previewSecondField: [
+    { required: true, message: '请输入课程概述' },
+    { max: 20, message: '课程概述长度不能超过20' }
+  ],
+  sortNum: [
+    { required: true, message: '请输入课程排序' },
+    { pattern: new RegExp(/^[0-9]\d*$/), message: '请输入大于等于0的整数', trigger: 'change' }
+  ],
+  discounts: [
+    { required: true, message: '请输入售卖价格' },
+    { pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/, message: '价格格式不正确' }
+  ]
 }
 
 export default defineComponent({
   name: 'CourseDetail',
-  components: { ArrowLeftOutlined, EditOutlined, AreaChartOutlined, AccountBookOutlined, ContainerOutlined },
-  setup () {
+  props: {
+    courseId: {
+      type: String
+    }
+  },
+  components: {
+    ArrowLeftOutlined,
+    EditOutlined,
+    AreaChartOutlined,
+    AccountBookOutlined,
+    ContainerOutlined,
+    AvatarUpload,
+    editor
+  },
+  setup (props) {
+    const formRef = ref()
     const state = reactive({
       current: ref(0)
     })
-    const formState: UnwrapRef<FormState> = reactive({
+    const formState = ref<FormState>({
       courseName: '',
       brief: '',
       teacherDTO: {
@@ -218,6 +213,10 @@ export default defineComponent({
         position: '',
         description: ''
       },
+      previewFirstField: '',
+      previewSecondField: '',
+      courseListImg: '',
+      courseImgUrl: '',
       sortNum: null,
       discounts: null,
       price: null,
@@ -225,19 +224,67 @@ export default defineComponent({
       discountsTag: '',
       activityCourse: false,
       activityCourseDTO: {
-        beginTime: '',
-        endTime: '',
+        beginTime: null,
+        endTime: null,
         amount: null,
         stock: null
-      }
+      },
+      courseDescriptionMarkDown: ''
     })
+    // const { validate } = useForm(formState.value, rules)
+    const $route = useRoute()
+    // 更新课程信息
+    const onSubmit = async () => {
+      await formRef.value.validate()
+      const { data } = await saveOrUpdateCourse(formState.value)
+      if (data.code === '000000') {
+        message.success(data.mesg)
+      } else {
+        message.error(data.mesg)
+      }
+    }
+    // 获取课程信息
+    const loadCourseById = async () => {
+      if ($route.name === 'courseEdit') {
+        try {
+          const { data } = await getCourseById(Number(props.courseId))
+          if (data.code === '000000') {
+            const { data: result } = data
+            if (result.activityCourseDTO) {
+              const { beginTime = '', endTime = '' } = result.activityCourseDTO
+              result.activityCourseDTO.beginTime = beginTime ? moment(beginTime, 'YYYY-MM-DD') : null
+              result.activityCourseDTO.endTime = endTime ? moment(endTime, 'YYYY-MM-DD') : null
+              formState.value = result
+            } else {
+              formState.value = {
+                ...result,
+                activityCourseDTO: {
+                  beginTime: null,
+                  endTime: null,
+                  amount: null,
+                  stock: null
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
     return {
+      formRef,
       ...toRefs(state),
       rules,
       formState,
       labelCol: { span: 5 },
-      wrapperCol: { span: 10 }
+      wrapperCol: { span: 10 },
+      onSubmit,
+      loadCourseById
     }
+  },
+  created () {
+    this.loadCourseById()
   }
 })
 </script>
