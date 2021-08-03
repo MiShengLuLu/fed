@@ -32,7 +32,7 @@
   </a-menu>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, watch } from 'vue'
+import { defineComponent, reactive, toRefs, watch, ref } from 'vue'
 import {
   PieChartOutlined,
   // MailOutlined,
@@ -41,6 +41,8 @@ import {
   AppstoreOutlined
 } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
+import { getUserPermissions } from '@/services/user'
+import { MenuItem } from '@/types/menu'
 
 interface Item {
   name: string
@@ -59,7 +61,8 @@ export default defineComponent({
     const state = reactive({
       selectedKeys: ['1-1'],
       openKeys: ['1'],
-      preOpenKeys: ['1']
+      preOpenKeys: ['1'],
+      menus: ref<MenuItem[]>([])
     })
 
     const $router = useRouter()
@@ -79,10 +82,19 @@ export default defineComponent({
       $router.push(`/${item.name}`)
     }
 
+    // 获取角色拥有的菜单
+    const loadRoleMenu = async () => {
+      const { data } = await getUserPermissions()
+      if (data.success) {
+        state.menus = data.content.menuList
+      }
+    }
+
     return {
       ...toRefs(state),
       toggleCollapsed,
-      handleClick
+      handleClick,
+      loadRoleMenu
     }
   },
   components: {
@@ -91,6 +103,9 @@ export default defineComponent({
     // DesktopOutlined,
     InboxOutlined,
     AppstoreOutlined
+  },
+  created () {
+    this.loadRoleMenu()
   }
 })
 </script>

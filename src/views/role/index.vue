@@ -133,7 +133,7 @@ const columns = [
   {
     title: '操作',
     key: 'action',
-    width: 200,
+    width: 220,
     fixed: 'right',
     slots: { customRender: 'action' }
   }

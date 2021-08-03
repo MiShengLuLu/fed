@@ -2,6 +2,8 @@ import request from '@/utils/request'
 import qs from 'qs'
 import { Content, RefreshContent, UserItem, QueryUser } from '@/types/user'
 import { frontResult, Result } from '@/types/base'
+import { MenuItem } from '@/types/menu'
+import { ResourcesItem } from '@/types/resources'
 
 interface User {
   phone: string;
@@ -28,6 +30,13 @@ interface GetUserPage extends Result {
 interface ChangeUserStatus extends Result {
   data: {
     status: boolean
+  }
+}
+
+interface GetUserPermissions extends frontResult {
+  content: {
+    menuList: MenuItem[];
+    resourceList: ResourcesItem[]
   }
 }
 
@@ -89,5 +98,12 @@ export const enableUser = (userId: number): Promise<{ data: ChangeUserStatus }> 
     params: {
       userId
     }
+  })
+}
+
+export const getUserPermissions = (): Promise<{ data: GetUserPermissions }> => {
+  return request({
+    method: 'get',
+    url: '/boss/permission/getUserPermissions'
   })
 }

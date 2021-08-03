@@ -1,5 +1,5 @@
 import { Result } from '@/types/base'
-import { Role, SubMenu } from '@/types/roles'
+import { Role } from '@/types/roles'
 import request from '@/utils/request'
 
 interface GetRoles extends Result {
@@ -19,10 +19,6 @@ interface GetAllRole extends Result {
 
 interface GetRole extends Result {
   data: Role
-}
-
-interface GetMenuRole extends Result {
-  data: Array<SubMenu>
 }
 
 // 根据分页搜索条件查询角色列表
@@ -56,15 +52,6 @@ export const del = (id: number): Promise<{ data: Update }> => {
   return request({
     method: 'delete',
     url: `/boss/role/${id}`
-  })
-}
-
-// 获取角色拥有的菜单列表
-export const getRoleMenus = (params: { roleId: number }): Promise<{ data: GetMenuRole }> => {
-  return request({
-    method: 'get',
-    url: '/boss/menu/getRoleMenus',
-    params
   })
 }
 

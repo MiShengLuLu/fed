@@ -21,6 +21,7 @@ export default defineComponent({
       editorData: props.value,
       editorConfig: {
         autosave: {
+          // eslint-disable-next-line
           save (editor: any) {
             // which should be resolved when the data is successfully saved.
             // return editor.getData()

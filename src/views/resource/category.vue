@@ -92,6 +92,7 @@ const columns = [
     key: 'action',
     width: 160,
     fixed: 'right',
+    align: 'center',
     slots: { customRender: 'action' }
   }
 ]

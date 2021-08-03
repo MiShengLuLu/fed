@@ -7,11 +7,11 @@
           layout="inline"
           :model="formState"
         >
-          <a-form-item label="课程名称">
+          <a-form-item label="课程名称" name="courseName">
             <a-input v-model:value="formState.courseName" placeholder="请输入课程名称">
             </a-input>
           </a-form-item>
-          <a-form-item label="课程状态">
+          <a-form-item label="课程状态" name="status">
             <a-select
               v-model:value="formState.status"
               placeholder="请选择课程状态"
@@ -57,14 +57,14 @@
         </template>
         <template #action="{ record }">
           <span>
-            <a>Invite 一 {{ record.name }}</a>
-            <a-divider type="vertical" />
             <a @click="$router.push({
               name: 'courseEdit',
               params: {
                 courseId: record.id
               }
             })">编辑</a>
+            <a-divider type="vertical" />
+            <a>内容管理</a>
           </span>
         </template>
       </a-table>
@@ -118,6 +118,7 @@ const columns = [
     dataIndex: 'action',
     fixed: 'right',
     width: 200,
+    align: 'center',
     slots: { customRender: 'action' }
   }
 ]

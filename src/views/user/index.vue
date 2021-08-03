@@ -7,12 +7,12 @@
           layout="inline"
           :model="formState"
         >
-          <a-form-item label="手机号">
+          <a-form-item label="手机号" name="phone">
             <a-input v-model:value="formState.phone" placeholder="请输入手机号">
             </a-input>
           </a-form-item>
-          <a-form-item label="注册时间">
-            <a-range-picker v-model:value="time" @change="onChange"/>
+          <a-form-item label="注册时间" name="time">
+            <a-range-picker v-model:value="formState.time" @change="onChange"/>
           </a-form-item>
           <a-form-item>
             <a-button
@@ -139,6 +139,7 @@ const columns = [
     dataIndex: 'operation',
     fixed: 'right',
     width: 200,
+    align: 'center',
     slots: { customRender: 'operation' }
   }
 ]

@@ -21,7 +21,6 @@
     "moment": "^2.29.1",
     "postcss-loader": "3",
     "qs": "^6.10.1",
-    "quill": "^1.3.7",
     "raw-loader": "0.5.1",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
@@ -29,7 +28,6 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "@types/quill": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",

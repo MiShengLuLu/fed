@@ -38,7 +38,7 @@ export const changeState = (params: { courseId: number; status: number }): Promi
 }
 
 // 图片上传
-export const avatarUpload = (data: any): Promise<{ data: UploadResult }> => {
+export const avatarUpload = (data: FormData): Promise<{ data: UploadResult }> => {
   return request({
     method: 'post',
     url: '/boss/course/upload',

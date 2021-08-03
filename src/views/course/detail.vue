@@ -59,10 +59,10 @@
             <a-input v-model:value="formState.previewSecondField" />
           </a-form-item>
           <a-form-item label="课程封面">
-            <avatar-upload v-model="formState.courseListImg" />
+            <avatar-upload v-model:value="formState.courseListImg" />
           </a-form-item>
           <a-form-item label="介绍封面">
-            <avatar-upload v-model="formState.courseImgUrl" />
+            <avatar-upload v-model:value="formState.courseImgUrl" />
           </a-form-item>
           <a-form-item label="课程排序" name="sortNum" required>
             <a-input v-model:value="formState.sortNum">
@@ -77,16 +77,16 @@
         </template>
         <template v-if="current === 1">
           <a-form-item label="售卖价格" name="discounts">
-            <a-input addon-after="元" />
+            <a-input addon-after="元" v-model:value="formState.discounts" />
           </a-form-item>
           <a-form-item label="商品原价" name="price">
-            <a-input addon-after="元" />
+            <a-input addon-after="元" v-model:value="formState.price" />
           </a-form-item>
           <a-form-item label="销量" name="sales">
-            <a-input addon-after="单" />
+            <a-input addon-after="单" v-model:value="formState.sales" />
           </a-form-item>
           <a-form-item label="活动标签" name="discountsTag">
-            <a-input placeholder="请输入" />
+            <a-input v-model:value="formState.discountsTag" placeholder="请输入活动标签" />
           </a-form-item>
         </template>
         <template v-if="current === 2">

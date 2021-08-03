@@ -69,7 +69,8 @@ const columns = [
     title: '操作',
     dataIndex: 'operation',
     fixed: 'right',
-    width: 200,
+    width: 180,
+    align: 'center',
     slots: { customRender: 'operation' }
   }
 ]
