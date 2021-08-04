@@ -28,14 +28,7 @@
           </a-radio-group>
         </a-form-item>
         <a-form-item label="排序">
-          <a-input addon-before="-" addon-after="+" v-model:value="formState.orderNum">
-            <template #addon-before>
-              <MinusOutlined />
-            </template>
-            <template #addon-after>
-              <PlusOutlined />
-            </template>
-          </a-input>
+          <input-number v-model:value="formState.orderNum" @input="val => formState.orderNum = Number(val)" />
         </a-form-item>
         <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
           <a-button type="primary" @click="onSubmit">提交</a-button>
@@ -48,11 +41,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import { FormState } from '@/types/menu'
 import { menuUpdate, getEditMenu } from '@/services/menu'
 import { useRouter, useRoute } from 'vue-router'
 import { message } from 'ant-design-vue'
+import InputNumber from '@/components/input-number.vue'
 
 const menuItem = {
   name: '',
@@ -71,7 +64,8 @@ const rules = {
 }
 
 export default defineComponent({
-  components: { MinusOutlined, PlusOutlined },
+  name: 'Menu',
+  components: { InputNumber },
   setup () {
     const formState = ref<FormState>(menuItem)
     const formRef = ref()

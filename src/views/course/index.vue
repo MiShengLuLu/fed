@@ -64,7 +64,12 @@
               }
             })">编辑</a>
             <a-divider type="vertical" />
-            <a>内容管理</a>
+            <a @click="$router.push({
+              name: 'lesson',
+              params: {
+                courseId: record.id
+              }
+            })">内容管理</a>
           </span>
         </template>
       </a-table>

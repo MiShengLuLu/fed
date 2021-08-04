@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 import { Result } from '@/types/base'
-import { CourseQuery, Course, UploadFile, FormState } from '@/types/courses'
+import { CourseQuery, Course, UploadFile, FormState, Section, Lesson } from '@/types/courses'
 
 interface GetCourses extends Result {
   data: {
@@ -18,6 +18,10 @@ interface UploadResult extends Result {
 
 interface UpdateCourse extends Result {
   data: FormState
+}
+
+interface SectionResult extends Result {
+  data: Section[]
 }
 
 // 获取课程
@@ -63,5 +67,34 @@ export const getCourseById = (courseId: number): Promise<{ data: UpdateCourse }>
     params: {
       courseId
     }
+  })
+}
+
+// 获取课程的模块与课时
+export const getSectionAndLesson = (courseId: number): Promise<{ data: SectionResult }> => {
+  return request({
+    method: 'get',
+    url: '/boss/course/section/getSectionAndLesson',
+    params: {
+      courseId
+    }
+  })
+}
+
+// 保存课程章节信息
+export const saveOrUpdateSection = (data: Section & { courseId: number }): Promise<{ data: Result }> => {
+  return request({
+    method: 'post',
+    url: '/boss/course/section/saveOrUpdateSection',
+    data
+  })
+}
+
+// 保存课时信息
+export const saveOrUpdate = (data: Lesson & { courseId: number }): Promise<{ data: Result }> => {
+  return request({
+    method: 'post',
+    url: '/boss/course/lesson/saveOrUpdate',
+    data
   })
 }

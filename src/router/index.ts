@@ -78,6 +78,12 @@ const routes: Array<RouteRecordRaw> = [
         props: true
       },
       {
+        path: '/lesson/:courseId',
+        name: 'lesson',
+        component: () => import(/* webpackChunkName: "lesson" */ '@/views/course/lesson.vue'),
+        props: true
+      },
+      {
         path: '/user',
         name: 'user',
         component: () => import(/* webpackChunkName: "user" */ '@/views/user/index.vue')

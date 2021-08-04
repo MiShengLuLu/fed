@@ -44,3 +44,26 @@ export interface FormState {
 export interface UploadFile {
   name: string
 }
+
+// 课时
+export interface Lesson {
+  id?: number | null;
+  theme: string;
+  sectionId?: number | null;
+  courseId: number;
+  duration: string | null;
+  isFree: boolean;
+  orderNum: number | null;
+  status?: number
+}
+
+// 章节
+export interface Section {
+  id?: number | null;
+  sectionName: string;
+  lessonDTOS?: Array<Lesson>;
+  courseId: number;
+  description: string;
+  orderNum: number | null;
+  status?: number
+}
