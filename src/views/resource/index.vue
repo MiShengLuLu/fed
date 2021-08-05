@@ -42,7 +42,7 @@
       </template>
       <a-button @click="addResource" :disabled="loading">添加</a-button>
       <a-divider type="vertical" />
-      <a-button @click="$router.push('/category')">资源分类</a-button>
+      <a-button @click="$router.push({ name: 'category' })">资源分类</a-button>
       <a-table
         :columns="columns"
         :data-source="resources"

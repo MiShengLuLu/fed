@@ -6,6 +6,7 @@
 import { defineComponent, reactive, toRefs } from 'vue'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { MyCustomUploadAdapterPlugin } from '@/plugins/ckUpload'
 
 export default defineComponent({
   name: 'ckEditor',
@@ -28,7 +29,8 @@ export default defineComponent({
             emit('input', editor.getData())
           },
           waitingTime: 5000
-        }
+        },
+        extraPlugins: [MyCustomUploadAdapterPlugin]
       }
     })
     return {
@@ -37,3 +39,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+:deep(.ck-content) {
+  min-height: 360px;
+}
+</style>

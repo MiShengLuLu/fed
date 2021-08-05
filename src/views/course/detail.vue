@@ -59,10 +59,10 @@
             <a-input v-model:value="formState.previewSecondField" />
           </a-form-item>
           <a-form-item label="课程封面">
-            <avatar-upload v-model:value="formState.courseListImg" />
+            <avatar-upload v-model:value="formState.courseListImg" @input="val => formState.courseListImg = val" />
           </a-form-item>
           <a-form-item label="介绍封面">
-            <avatar-upload v-model:value="formState.courseImgUrl" />
+            <avatar-upload v-model:value="formState.courseImgUrl" @input="val => formState.courseImgUrl = val" />
           </a-form-item>
           <a-form-item label="课程排序" name="sortNum" required>
             <a-input v-model:value="formState.sortNum">

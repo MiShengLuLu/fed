@@ -2,7 +2,7 @@
   <div class="main-container">
     <a-card :bordered="false">
       <template #title>
-        <a-button @click="$router.push('/menu/create')">添加菜单</a-button>
+        <a-button @click="$router.push({ name: 'menuCreate' })">添加菜单</a-button>
       </template>
       <a-table
         :columns="columns"
@@ -103,10 +103,16 @@ export default defineComponent({
   },
   methods: {
     async loadAllMenus () {
-      const { data } = await getAllMenus()
-      if (data.code === '000000') {
-        this.menus = data.data
+      this.loading = true
+      try {
+        const { data } = await getAllMenus()
+        if (data.code === '000000') {
+          this.menus = data.data
+        }
+      } catch (error) {
+        console.log(error)
       }
+      this.loading = false
     },
     async onDelete (id: number) {
       const { data } = await menuDelete(id)

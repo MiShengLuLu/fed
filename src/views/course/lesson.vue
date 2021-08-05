@@ -8,39 +8,55 @@
         <a-divider type="vertical" />
         课时管理
         <a-divider type="vertical" />
-        <a-button type="primary" @click="visible = true, sectionEdit = false"><PlusOutlined />添加阶段</a-button>
+        <a-button type="primary" @click="addSection"><PlusOutlined />添加阶段</a-button>
       </template>
+      <a-spin :spinning="loading" size="large" />
       <a-tree
         show-icon
         default-expand-all
         blockNode
+        multiple
       >
-        <a-tree-node v-for="item in treeData" :key="item.id">
-          <template #switcherIcon v-if="item.lessonDTOS">
-            <down-outlined />
-          </template>
+        <template #switcherIcon>
+          <down-outlined />
+        </template>
+        <a-tree-node v-for="(item, i) in treeData" :key="item.id">
           <template #title>{{ item.sectionName }}</template>
           <template #icon>
-            <a-button type="dashed" @click="viewSection(item.id)">编辑</a-button>
+            <ArrowUpOutlined style="color: #1890ff" v-if="i > 0"/>
             <a-divider type="vertical" />
-            <a-button>添加课时</a-button>
+            <ArrowDownOutlined style="color: #1890ff" v-if="i < treeData.length - 1" />
+            <span style="display: inline-block; width: 40px"></span>
+            <a-button type="dashed" @click="viewSection(item)">编辑</a-button>
             <a-divider type="vertical" />
-            <a-button type="dashed">{{ getStatus(item.status) }}</a-button>
+            <a-button @click="addLesson(item)">添加课时</a-button>
+            <a-divider type="vertical" />
+            <a-button type="dashed" @click="viewStatus(item)">{{ getStatus(item.status) }}</a-button>
           </template>
           <template v-if="item.lessonDTOS">
-            <a-tree-node v-for="$s in item.lessonDTOS" :key="$s.id">
+            <a-tree-node v-for="($s, $i) in item.lessonDTOS" :key="$s.id">
               <template #title>{{ $s.theme }}</template>
               <template #icon>
-                <a-button @click="viewLesson(item.id, $s.id)">编辑</a-button>
+                <ArrowUpOutlined style="color: #1890ff" v-if="$i > 0"/>
                 <a-divider type="vertical" />
-                <a-button type="primary">上传视频</a-button>
+                <ArrowDownOutlined style="color: #1890ff" v-if="$i < item.lessonDTOS.length - 1" />
+                <span style="display: inline-block; width: 40px"></span>
+                <a-button @click="viewLesson(item, $s)">编辑</a-button>
                 <a-divider type="vertical" />
-                <a-button>{{ getStatus($s.status) }}</a-button>
+                <a-button type="primary" @click="$router.push({
+                  name: 'videoUpload',
+                  params: {
+                    courseId
+                  }
+                })">上传视频</a-button>
+                <a-divider type="vertical" />
+                <a-button @click="viewStatus(item, $s)">{{ getStatus($s.status) }}</a-button>
               </template>
             </a-tree-node>
           </template>
         </a-tree-node>
       </a-tree>
+      <div v-if="!treeData" class="empty-container">暂无数据</div>
     </a-card>
   </section>
   <a-modal v-model:visible="visible" title="章节信息" @ok="updateSection">
@@ -50,7 +66,7 @@
       :wrapper-col="wrapperCol"
     >
       <a-form-item label="课程名称" required>
-        <a-input v-model:value="sectionForm.courseName" :disabled="sectionEdit" />
+        <a-input v-model:value="sectionForm.courseName" disabled />
       </a-form-item>
       <a-form-item label="章节名称" required>
         <a-input v-model:value="sectionForm.sectionName" />
@@ -59,7 +75,10 @@
         <a-textarea v-model:value="sectionForm.description" allow-clear />
       </a-form-item>
       <a-form-item label="章节排序">
-        <input-number v-model:value="sectionForm.orderNum" @input="val => sectionForm.orderNum = Number(val)" :disabled="sectionEdit" />
+        <input-number
+          v-model:value="sectionForm.orderNum"
+          @input="val => sectionForm.orderNum = Number(val)"
+        />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -70,10 +89,10 @@
       :wrapper-col="wrapperCol"
     >
       <a-form-item label="课程名称" required>
-        <a-input v-model:value="lessonForm.courseName" :disabled="lessonEdit"></a-input>
+        <a-input v-model:value="lessonForm.courseName" disabled></a-input>
       </a-form-item>
       <a-form-item label="章节名称">
-        <a-input v-model:value="lessonForm.sectionName" :disabled="lessonEdit"></a-input>
+        <a-input v-model:value="lessonForm.sectionName" disabled></a-input>
       </a-form-item>
       <a-form-item label="课时名称">
         <a-input v-model:value="lessonForm.theme"></a-input>
@@ -85,12 +104,16 @@
         <a-switch v-model:checked="lessonForm.isFree"></a-switch>
       </a-form-item>
       <a-form-item label="课时排序">
-        <input-number v-model:value="lessonForm.orderNum" @input="val => lessonForm.orderNum = Number(val)" :disabled="lessonEdit" />
+        <input-number
+          v-model:value="lessonForm.orderNum"
+          @input="val => lessonForm.orderNum = Number(val)"
+        />
       </a-form-item>
     </a-form>
   </a-modal>
-  <a-modal v-model:visible="modalVisible">
-    <a-select v-model="status">
+  <a-modal v-model:visible="modalVisible" title="温馨提示" @ok="ok">
+    <h1>当前状态：{{ getStatus(status) }}</h1>
+    <a-select v-model:value="status" style="width: 200px" @change="onChange">
       <a-select-option :value="0">已隐藏</a-select-option>
       <a-select-option :value="1">待更新</a-select-option>
       <a-select-option :value="2">已更新</a-select-option>
@@ -102,7 +125,9 @@
 import {
   DownOutlined,
   PlusOutlined,
-  ArrowLeftOutlined
+  ArrowLeftOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined
 } from '@ant-design/icons-vue'
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { getSectionAndLesson, getCourseById, saveOrUpdateSection, saveOrUpdate } from '@/services/courses'
@@ -119,6 +144,15 @@ interface L extends Lesson {
   sectionName: string
 }
 
+const formDate = {
+  id: null,
+  courseName: '',
+  sectionName: '',
+  description: '',
+  orderNum: null,
+  status: 0
+}
+
 export default defineComponent({
   name: 'Lesson',
   props: {
@@ -131,18 +165,16 @@ export default defineComponent({
     DownOutlined,
     InputNumber,
     PlusOutlined,
-    ArrowLeftOutlined
+    ArrowLeftOutlined,
+    ArrowUpOutlined,
+    ArrowDownOutlined
   },
   setup (props) {
     const state = reactive({
       visible: false,
       show: false,
       sectionForm: ref<S & { courseId: number}>({
-        id: null,
-        courseName: '',
-        sectionName: '',
-        description: '',
-        orderNum: null,
+        ...formDate,
         courseId: Number(props.courseId)
       }),
       lessonForm: ref<L & { courseId: number }>({
@@ -153,14 +185,17 @@ export default defineComponent({
         duration: null,
         isFree: false,
         orderNum: null,
-        courseId: Number(props.courseId)
+        courseId: Number(props.courseId),
+        status: 0
       }),
       sectionEdit: false,
       lessonEdit: false,
       sectionConfirmLoading: false,
       lessonConfirmLoading: false,
       modalVisible: false,
-      status: ref<number | null>()
+      status: ref<number>(),
+      confirmLoading: false,
+      loading: false
     })
     const treeData = ref<Section[]>([])
     const course = ref<{
@@ -186,32 +221,51 @@ export default defineComponent({
       }
     }
     // 预览章节
-    const viewSection = (id: number) => {
+    const viewSection = (item: Section) => {
       state.visible = true
       state.sectionEdit = true
-      const item = treeData.value.filter(item => item.id === id)
       state.sectionForm = {
-        ...item[0],
+        ...item,
         ...course.value
       }
     }
     // 预览课时
-    const viewLesson = (sectionId: number, id: number) => {
+    const viewLesson = ($x: Section, $y: Lesson) => {
       state.show = true
       state.lessonEdit = true
-      const item = treeData.value.filter(item => item.id === sectionId)
-      const $item = item[0].lessonDTOS?.filter($item => $item.id === id) || []
       state.lessonForm = {
-        ...$item[0],
-        sectionName: item[0].sectionName || '',
+        ...$y,
+        sectionName: $x.sectionName || '',
         ...course.value
       }
+    }
+    // 状态预览
+    const viewStatus = ($x: Section, $y?: Lesson) => {
+      if ($y) {
+        // 课时
+        state.status = $y.status
+        state.lessonEdit = true
+        state.lessonForm = {
+          ...$y,
+          sectionName: $x.sectionName,
+          ...course.value
+        }
+      } else {
+        // 章节
+        state.status = $x.status
+        state.sectionEdit = true
+        state.sectionForm = {
+          ...$x,
+          ...course.value
+        }
+      }
+      state.modalVisible = true
     }
     // 更新章节
     const updateSection = async () => {
       state.sectionConfirmLoading = true
       try {
-        const { data } = await saveOrUpdateSection({ ...state.sectionForm, ...course })
+        const { data } = await saveOrUpdateSection(state.sectionForm)
         if (data.code === '000000') {
           state.visible = false
           message.success(data.mesg)
@@ -239,6 +293,28 @@ export default defineComponent({
       }
       state.lessonConfirmLoading = false
     }
+    const onChange = (val: number) => {
+      if (state.sectionEdit) {
+        state.sectionForm.status = val
+      } else {
+        state.lessonForm.status = val
+      }
+    }
+    // 状态更新
+    const ok = async () => {
+      state.confirmLoading = true
+      try {
+        if (state.lessonEdit) {
+          await updateLesson()
+        } else {
+          await updateSection()
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      state.confirmLoading = false
+      state.modalVisible = false
+    }
 
     const getStatus = (v: number) => {
       switch (v) {
@@ -252,10 +328,37 @@ export default defineComponent({
           break
       }
     }
+    // 添加章节
+    const addSection = () => {
+      state.visible = true
+      state.sectionEdit = false
+      state.sectionForm = {
+        courseName: course.value.courseName,
+        sectionName: '',
+        description: '',
+        orderNum: null,
+        status: 0,
+        courseId: Number(props.courseId)
+      }
+    }
+    // 添加课时
+    const addLesson = (section: Section) => {
+      state.show = true
+      state.lessonEdit = false
+      state.lessonForm = {
+        courseName: course.value.courseName,
+        sectionName: section.sectionName,
+        theme: '',
+        duration: null,
+        isFree: false,
+        orderNum: null,
+        courseId: Number(props.courseId),
+        status: 0
+      }
+    }
 
     return {
       ...toRefs(state),
-      // selectedKeys,
       treeData,
       loadData,
       loadCourseById,
@@ -264,13 +367,24 @@ export default defineComponent({
       updateSection,
       updateLesson,
       getStatus,
+      viewStatus,
+      onChange,
+      ok,
+      addSection,
+      addLesson,
       labelCol: { span: 6 },
       wrapperCol: { span: 16 }
     }
   },
-  created () {
-    this.loadData()
-    this.loadCourseById()
+  async created () {
+    this.loading = true
+    try {
+      await this.loadData()
+      await this.loadCourseById()
+    } catch (error) {
+      console.log(error)
+    }
+    this.loading = false
   }
 })
 </script>
@@ -305,5 +419,16 @@ export default defineComponent({
     text-overflow: ellipsis;
     display: inline-block;
   }
+}
+.ant-spin,
+.empty-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.empty-container {
+  color: #c9c9c9;
 }
 </style>

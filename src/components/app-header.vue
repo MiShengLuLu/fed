@@ -10,7 +10,6 @@
       <a-breadcrumb-item>Home</a-breadcrumb-item>
       <a-breadcrumb-item><a href="">Application Center</a></a-breadcrumb-item>
       <a-breadcrumb-item><a href="">Application List</a></a-breadcrumb-item>
-      <a-breadcrumb-item>An Application</a-breadcrumb-item>
     </a-breadcrumb>
   </div>
   <a-popover placement="bottomRight">
@@ -54,7 +53,9 @@ function useLogout () {
       content: createVNode('div', { style: 'color:red;' }, '确认退出吗？'),
       onOk () {
         $store.commit('UPDATE_USER', null)
-        $router.push('/login')
+        $router.push({
+          name: 'login'
+        })
       },
       onCancel () {
         console.log('Cancel')

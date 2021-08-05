@@ -1,7 +1,13 @@
 <template>
   <div class="main-container">
     <a-card :bordered="false">
-      <template #title>{{ $route.name === 'menuEdit' ? '编辑菜单' : '添加菜单' }}</template>
+      <template #title>
+        <span style="cursor: pointer" @click="$router.back()">
+          <ArrowLeftOutlined />
+        </span>
+        <a-divider type="vertical" />
+        {{ $route.name === 'menuEdit' ? '编辑菜单' : '添加菜单' }}
+      </template>
       <a-form ref="formRef" :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol" :rules="rules">
         <a-form-item label="菜单名称" required name="name">
           <a-input v-model:value="formState.name" />
@@ -35,17 +41,21 @@
           <a-button style="margin-left: 10px" @click="$router.go(-1)">取消</a-button>
         </a-form-item>
       </a-form>
+      <div v-if="loading" class="empty-continer">
+        <a-spin :spinning="loading" />
+      </div>
     </a-card>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { FormState } from '@/types/menu'
 import { menuUpdate, getEditMenu } from '@/services/menu'
 import { useRouter, useRoute } from 'vue-router'
 import { message } from 'ant-design-vue'
 import InputNumber from '@/components/input-number.vue'
+import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 
 const menuItem = {
   name: '',
@@ -65,14 +75,18 @@ const rules = {
 
 export default defineComponent({
   name: 'Menu',
-  components: { InputNumber },
+  components: { InputNumber, ArrowLeftOutlined },
   setup () {
     const formState = ref<FormState>(menuItem)
     const formRef = ref()
+    const state = reactive({
+      loading: false
+    })
 
     const $router = useRouter()
     const $route = useRoute()
     const onSubmit = async () => {
+      state.loading = true
       try {
         await formRef.value.validate()
         if ($route.name === 'menuEdit') {
@@ -88,11 +102,13 @@ export default defineComponent({
       } catch (error) {
         console.error(error)
       }
+      state.loading = false
     }
 
     const parentMenuList = ref<FormState[]>([])
 
     return {
+      ...toRefs(state),
       formRef,
       rules,
       labelCol: { span: 4 },
@@ -125,5 +141,21 @@ export default defineComponent({
 .ant-card-body {
   height: calc(100% - 65px);
   padding-bottom: 0;
+  position: relative;
+}
+.empty-continer {
+  background: rgba($color: #fcfcfc, $alpha: .5);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+  .ant-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 </style>

@@ -98,3 +98,12 @@ export const saveOrUpdate = (data: Lesson & { courseId: number }): Promise<{ dat
     data
   })
 }
+
+// 图片上传
+export const imgUpload = (data: FormData): Promise<{ data: Result }> => {
+  return request({
+    method: 'post',
+    url: '/boss/course/upload',
+    data
+  })
+}

@@ -113,7 +113,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import url('../../styles/index.scss');
 
+.ant-card {
+  height: 100%;
+}
 :deep(.ant-card-body) {
+  height: calc(100% - 65px);
+  overflow: hidden;
   overflow-y: auto;
 }
 </style>

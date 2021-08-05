@@ -35,7 +35,9 @@
               重置
             </a-button>
             <a-divider type="vertical" />
-            <a-button @click="$router.push('/course/add')" danger>新增课程</a-button>
+            <a-button @click="$router.push({
+              name: 'courseAdd'
+            })" danger>新增课程</a-button>
           </a-form-item>
         </a-form>
       </template>
