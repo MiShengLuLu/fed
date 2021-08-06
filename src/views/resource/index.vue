@@ -226,7 +226,6 @@ export default defineComponent({
         confirmLoading.value = false
       } catch (error) {
         confirmLoading.value = false
-        console.error(error)
       }
     }
 

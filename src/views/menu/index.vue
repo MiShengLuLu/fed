@@ -109,9 +109,7 @@ export default defineComponent({
         if (data.code === '000000') {
           this.menus = data.data
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
       this.loading = false
     },
     async onDelete (id: number) {

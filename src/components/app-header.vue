@@ -7,9 +7,17 @@
     />
     <menu-fold-outlined v-else class="trigger" @click="collapsedChange" />
     <a-breadcrumb>
-      <a-breadcrumb-item>首页</a-breadcrumb-item>
-      <a-breadcrumb-item><a href="">Application Center</a></a-breadcrumb-item>
-      <a-breadcrumb-item><a href="">Application List</a></a-breadcrumb-item>
+      <a-breadcrumb-item key="home">首页</a-breadcrumb-item>
+      <a-breadcrumb-item
+        class="cursor"
+        v-for="item in routes"
+        :key="item.breadcrumbName"
+        @click="$router.push({
+          name: item.name
+        })"
+      >
+        {{ item.breadcrumbName }}
+      </a-breadcrumb-item>
     </a-breadcrumb>
   </div>
   <a-popover placement="bottomRight">
@@ -30,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, createVNode } from 'vue'
+import { defineComponent, reactive, toRefs, createVNode, ref } from 'vue'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -42,6 +50,7 @@ import { getUserInfo } from '@/services/user'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { Modal } from 'ant-design-vue'
+import { Route, matchRoute } from '@/utils/breadcrumb'
 
 function useLogout () {
   const $store = useStore()
@@ -56,9 +65,6 @@ function useLogout () {
         $router.push({
           name: 'login'
         })
-      },
-      onCancel () {
-        console.log('Cancel')
       },
       class: 'test'
     })
@@ -81,6 +87,7 @@ export default defineComponent({
     const state = reactive({
       userInfo: {}
     })
+    const routes = ref<Route[]>([])
 
     const collapsedChange = () => {
       emit('collapsedChange', !props.collapsed)
@@ -94,12 +101,24 @@ export default defineComponent({
       ...toRefs(state),
       loadInfo,
       ...useLogout(),
-      collapsedChange
+      collapsedChange,
+      routes
+    }
+  },
+  watch: {
+    $route: {
+      handler: function (val) {
+        this.routes = matchRoute(val)
+      },
+      // 深度观察监听
+      deep: true
     }
   },
   created () {
-    console.log(this.$route)
     this.loadInfo()
+  },
+  mounted () {
+    this.routes = matchRoute(this.$route)
   }
 })
 </script>
@@ -124,5 +143,9 @@ export default defineComponent({
 
 .ant-space {
   margin-right: 20px;
+}
+
+.cursor :deep(span){
+  cursor: pointer;
 }
 </style>

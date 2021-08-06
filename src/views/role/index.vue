@@ -214,9 +214,7 @@ export default defineComponent({
           message.error(data.mesg)
         }
         confirmLoading.value = false
-      } catch (error) {
-        console.error(error)
-      }
+      } catch (error) {}
     }
     // 编辑角色
     const editRole = async (id: number) => {

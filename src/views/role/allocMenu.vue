@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { TreeDataItem } from 'ant-design-vue/es/tree/Tree'
 import { getMenuNodeList, allocateRoleMenus, getRoleMenus } from '@/services/menu'
 import { message } from 'ant-design-vue'
@@ -45,9 +45,6 @@ export default defineComponent({
     const treeData = ref<TreeDataItem[]>([])
     const checkedKeys = ref<number[]>([])
     const $router = useRouter()
-    watch(checkedKeys, () => {
-      console.log('checkedKeys', checkedKeys)
-    })
 
     // 获取所有菜单
     const loadAllMenu = async () => {

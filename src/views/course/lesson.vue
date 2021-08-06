@@ -221,9 +221,7 @@ export default defineComponent({
         if (data.code === '000000') {
           course.value.courseName = data.data.courseName
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
     }
     // 预览章节
     const viewSection = (item: Section) => {
@@ -278,9 +276,7 @@ export default defineComponent({
         } else {
           message.error(data.mesg)
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
       state.sectionConfirmLoading = false
     }
     // 更新课时
@@ -294,9 +290,7 @@ export default defineComponent({
         } else {
           message.error(data.mesg)
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
       state.lessonConfirmLoading = false
     }
     const onChange = (val: number) => {
@@ -315,9 +309,7 @@ export default defineComponent({
         } else {
           await updateSection()
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
       state.confirmLoading = false
       state.modalVisible = false
     }
@@ -389,9 +381,7 @@ export default defineComponent({
     try {
       await this.loadData()
       await this.loadCourseById()
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
     this.loading = false
   }
 })

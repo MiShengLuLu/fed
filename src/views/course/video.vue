@@ -100,9 +100,7 @@ export default defineComponent({
         if (data.code === '000000') {
           state.formState.courseName = data.data.courseName
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
     }
     const loadSectionById = async () => {
       try {
@@ -110,9 +108,7 @@ export default defineComponent({
         if (data.code === '000000') {
           state.formState.sectionName = data.data.sectionName
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
     }
 
     const initUploader = () => {

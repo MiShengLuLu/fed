@@ -35,8 +35,6 @@
 import { defineComponent, reactive, toRefs, watch, ref } from 'vue'
 import {
   PieChartOutlined,
-  // MailOutlined,
-  // DesktopOutlined,
   InboxOutlined,
   AppstoreOutlined
 } from '@ant-design/icons-vue'
@@ -59,9 +57,9 @@ export default defineComponent({
 
   setup (props) {
     const state = reactive({
-      selectedKeys: ['1-1'],
-      openKeys: ['1'],
-      preOpenKeys: ['1'],
+      selectedKeys: [],
+      openKeys: [''],
+      preOpenKeys: [''],
       menus: ref<MenuItem[]>([])
     })
 
@@ -77,8 +75,7 @@ export default defineComponent({
       state.openKeys = props.collapsed ? [] : state.preOpenKeys
     }
 
-    const handleClick = ({ item, key }: { item: Item, key: string }) => {
-      console.log(item, key)
+    const handleClick = ({ item }: { item: Item }) => {
       $router.push(`/${item.name}`)
     }
 
@@ -99,8 +96,6 @@ export default defineComponent({
   },
   components: {
     PieChartOutlined,
-    // MailOutlined,
-    // DesktopOutlined,
     InboxOutlined,
     AppstoreOutlined
   },

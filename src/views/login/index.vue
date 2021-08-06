@@ -6,7 +6,6 @@
     :rules="rules"
     v-bind="layout"
     @finish="handleFinish"
-    @finishFailed="handleFinishFailed"
   >
     <a-form-item has-feedback label="手机号" name="phone">
       <a-input v-model:value="formState.phone" type="text" autocomplete="off" />
@@ -21,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { RuleObject, ValidateErrorEntity } from 'ant-design-vue/es/form/interface'
+import { RuleObject } from 'ant-design-vue/es/form/interface'
 import { message } from 'ant-design-vue'
 import { defineComponent, reactive, ref, UnwrapRef } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -83,16 +82,16 @@ export default defineComponent({
       message.success('登陆成功')
     }
     // 提交表单且数据验证失败后回调事件
-    const handleFinishFailed = (errors: ValidateErrorEntity<FormState>) => {
-      console.log('errors', errors)
-    }
+    // const handleFinishFailed = (errors: ValidateErrorEntity<FormState>) => {
+    //   console.log('errors', errors)
+    // }
     return {
       formState,
       formRef,
       rules,
       layout,
       loading,
-      handleFinishFailed,
+      // handleFinishFailed,
       handleFinish
     }
   }

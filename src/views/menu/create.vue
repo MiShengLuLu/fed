@@ -99,9 +99,7 @@ export default defineComponent({
         } else {
           message.error(data.mesg)
         }
-      } catch (error) {
-        console.error(error)
-      }
+      } catch (error) {}
       state.loading = false
     }
 
