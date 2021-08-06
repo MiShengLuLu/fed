@@ -6,7 +6,7 @@
           <ArrowLeftOutlined />
         </span>
         <a-divider type="vertical" />
-        课时管理
+        {{ course.courseName || '内容管理' }}
         <a-divider type="vertical" />
         <a-button type="primary" @click="addSection"><PlusOutlined />添加阶段</a-button>
       </template>
@@ -47,6 +47,10 @@
                   name: 'videoUpload',
                   params: {
                     courseId
+                  },
+                  query: {
+                    sectionId: item.id,
+                    lessonId: $s.id
                   }
                 })">上传视频</a-button>
                 <a-divider type="vertical" />
@@ -186,6 +190,7 @@ export default defineComponent({
         isFree: false,
         orderNum: null,
         courseId: Number(props.courseId),
+        sectionId: null,
         status: 0
       }),
       sectionEdit: false,
@@ -269,6 +274,7 @@ export default defineComponent({
         if (data.code === '000000') {
           state.visible = false
           message.success(data.mesg)
+          loadData()
         } else {
           message.error(data.mesg)
         }
@@ -348,6 +354,7 @@ export default defineComponent({
       state.lessonForm = {
         courseName: course.value.courseName,
         sectionName: section.sectionName,
+        sectionId: section.id,
         theme: '',
         duration: null,
         isFree: false,
@@ -359,6 +366,7 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
+      course,
       treeData,
       loadData,
       loadCourseById,

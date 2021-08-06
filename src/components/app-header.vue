@@ -7,7 +7,7 @@
     />
     <menu-fold-outlined v-else class="trigger" @click="collapsedChange" />
     <a-breadcrumb>
-      <a-breadcrumb-item>Home</a-breadcrumb-item>
+      <a-breadcrumb-item>首页</a-breadcrumb-item>
       <a-breadcrumb-item><a href="">Application Center</a></a-breadcrumb-item>
       <a-breadcrumb-item><a href="">Application List</a></a-breadcrumb-item>
     </a-breadcrumb>
@@ -98,6 +98,7 @@ export default defineComponent({
     }
   },
   created () {
+    console.log(this.$route)
     this.loadInfo()
   }
 })

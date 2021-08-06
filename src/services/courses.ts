@@ -90,6 +90,17 @@ export const saveOrUpdateSection = (data: Section & { courseId: number }): Promi
   })
 }
 
+// 查询章节信息
+export const getBySectionId = (sectionId: number): Promise<{ data: Result & { data: Section }}> => {
+  return request({
+    method: 'get',
+    url: '/boss/course/section/getBySectionId',
+    params: {
+      sectionId
+    }
+  })
+}
+
 // 保存课时信息
 export const saveOrUpdate = (data: Lesson & { courseId: number }): Promise<{ data: Result }> => {
   return request({

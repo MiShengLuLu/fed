@@ -57,7 +57,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "resource" */ '@/views/resource/index.vue')
       },
       {
-        path: '/category',
+        path: '/resource/category',
         name: 'category',
         component: () => import(/* webpackChunkName: "category" */ '@/views/resource/category.vue')
       },
@@ -78,13 +78,13 @@ const routes: Array<RouteRecordRaw> = [
         props: true
       },
       {
-        path: '/lesson/:courseId',
+        path: '/course/lesson/:courseId',
         name: 'lesson',
         component: () => import(/* webpackChunkName: "lesson" */ '@/views/course/lesson.vue'),
         props: true
       },
       {
-        path: '/lesson/:courseId/video',
+        path: '/course/lesson/:courseId/video',
         name: 'videoUpload',
         component: () => import(/* webpackChunkName: "videoUpload" */ '@/views/course/video.vue'),
         props: true
