@@ -54,7 +54,8 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {
@@ -65,7 +66,7 @@ export default defineComponent({
   setup (props, { emit }) {
     const fileList = ref<FileItem[]>([])
     const loading = ref<boolean>(false)
-    const imageUrl = ref<string>('')
+    const imageUrl = ref<string>(props.value)
 
     const handleChange = (info: FileInfo) => {
       if (info.file.status === 'uploading') {
