@@ -110,6 +110,11 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
+    path: '/todo',
+    name: 'todo',
+    component: () => import(/* webpackChunkName: "todomvc" */ '@/views/todomvc/index.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404',
     // redirect: '/404',
