@@ -1,15 +1,34 @@
 <template>
   <header class="header">
     <h1>todos</h1>
-    <input class="new-todo" placeholder="What needs to be done?" autofocus />
+    <input data-testid="new-todo" class="new-todo" placeholder="What needs to be done?" autofocus @keyup.enter="handleNewTodo" />
   </header>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+interface Event {
+  target: {
+    value: string;
+    checked: boolean
+  }
+}
+
 export default defineComponent({
-  name: 'TodoHeader'
+  name: 'TodoHeader',
+  setup (props, { emit }) {
+    const handleNewTodo = (e: Event) => {
+      const value = e.target.value.trim()
+      if (!value.length) return
+      emit('new-todo', value)
+      e.target.value = ''
+    }
+
+    return {
+      handleNewTodo
+    }
+  }
 })
 </script>
 
