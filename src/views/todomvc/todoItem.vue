@@ -1,8 +1,8 @@
 <template>
-  <li class="completed">
+  <li data-testid="todo-item" :class="{ completed: item.done }">
     <div class="view">
-      <input class="toggle" type="checkbox" checked />
-      <label>Taste JavaScript</label>
+      <input data-testid="todo-done" class="toggle" type="checkbox" v-model="item.done" />
+      <label data-testid="todo-text">{{ item.text }}</label>
       <button class="destroy"></button>
     </div>
     <input class="edit" value="Create a TodoMVC template" />
@@ -13,7 +13,23 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'TodoItem'
+  name: 'TodoItem',
+  props: {
+    todo: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  computed: {
+    item: function () {
+      return this.todo
+    }
+  }
+  // data () {
+  //   return {
+  //     item: this.todo
+  //   }
+  // }
 })
 </script>
 

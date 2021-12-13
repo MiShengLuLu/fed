@@ -1,6 +1,6 @@
 <template>
   <section class="todoapp">
-    <todo-header></todo-header>
+    <todo-header @new-todo="handleNewTodo"></todo-header>
     <!-- This section should be hidden by default and shown when there are todos -->
     <section class="main">
       <input id="toggle-all" class="toggle-all" type="checkbox" />
@@ -8,8 +8,7 @@
       <ul class="todo-list">
         <!-- These are here just to show the structure of the list items -->
         <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-        <todo-item></todo-item>
-        <todo-item></todo-item>
+        <todo-item v-for="item in todos" :key="item.id" :todo="item"></todo-item>
         <!-- <li>
           <div class="view">
             <input class="toggle" type="checkbox" />
@@ -25,16 +24,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import TodoHeader from './todoHeader.vue'
 import TodoFooter from './todoFooter.vue'
 import TodoItem from './todoItem.vue'
 
-export default defineComponent({
-  components: { TodoHeader, TodoFooter, TodoItem }
-  // setup () {
+interface Todo {
+  id: number,
+  text: string,
+  done: boolean
+}
 
-  // }
+export default defineComponent({
+  components: { TodoHeader, TodoFooter, TodoItem },
+  setup () {
+    const todos = ref<Todo[]>([])
+    const handleNewTodo = (text: string) => {
+      const lastTodo = todos.value[todos.value.length - 1]
+      todos.value.push({
+        id: lastTodo ? lastTodo.id + 1 : 1,
+        text,
+        done: false
+      })
+    }
+
+    return {
+      todos,
+      handleNewTodo
+    }
+  }
 })
 </script>
 
