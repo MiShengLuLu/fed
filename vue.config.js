@@ -3,6 +3,9 @@ const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin')
 const { styles } = require('@ckeditor/ckeditor5-dev-utils')
 
 module.exports = {
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/fed/'
+    : '/',
   css: {
     loaderOptions: {
       // 默认情况下 `sass` 选项会同时对 `sass` 和 `scss` 语法同时生效
