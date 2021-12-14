@@ -3,42 +3,46 @@
     <todo-header @new-todo="handleNewTodo"></todo-header>
     <!-- This section should be hidden by default and shown when there are todos -->
     <section class="main">
-      <input id="toggle-all" class="toggle-all" type="checkbox" />
+      <input v-model="toggleAll" data-testid="toggle-all" id="toggle-all" class="toggle-all" type="checkbox" />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
         <!-- These are here just to show the structure of the list items -->
         <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-        <todo-item v-for="item in todos" :key="item.id" :todo="item"></todo-item>
-        <!-- <li>
-          <div class="view">
-            <input class="toggle" type="checkbox" />
-            <label>Buy a unicorn</label>
-            <button class="destroy"></button>
-          </div>
-          <input class="edit" value="Rule the web" />
-        </li> -->
+        <todo-item v-for="item in todosFilter" :key="item.id" :todo="item" @delete-todo="handleDeleteTodo" @edit-todo="handleEditTodo"></todo-item>
       </ul>
     </section>
-    <todo-footer></todo-footer>
+    <todo-footer :todos="todos" @clear-completed="handleClearCompleted"></todo-footer>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import TodoHeader from './todoHeader.vue'
 import TodoFooter from './todoFooter.vue'
 import TodoItem from './todoItem.vue'
-
-interface Todo {
-  id: number,
-  text: string,
-  done: boolean
-}
+import { Todo } from '@/types/todomvc'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { TodoHeader, TodoFooter, TodoItem },
   setup () {
+    const $route = useRoute()
     const todos = ref<Todo[]>([])
+
+    const toggleAll = computed({
+      get: () => {
+        if (todos.value.length) {
+          return todos.value.every(todo => todo.done)
+        } else {
+          return false
+        }
+      },
+      set: (checked) => {
+        todos.value.forEach((todo: Todo) => {
+          todo.done = checked
+        })
+      }
+    })
     const handleNewTodo = (text: string) => {
       const lastTodo = todos.value[todos.value.length - 1]
       todos.value.push({
@@ -48,9 +52,52 @@ export default defineComponent({
       })
     }
 
+    const handleDeleteTodo = (id: number) => {
+      const index = todos.value.findIndex(t => t.id === id)
+      if (index !== -1) {
+        todos.value.splice(index, 1)
+      }
+    }
+
+    const handleEditTodo = ({ text, id }: { text: string, id: number}) => {
+      const todo = todos.value.find(t => t.id === id)
+      if (!todo) return
+      if (!text.trim().length) {
+        // 执行删除
+        return handleDeleteTodo(id)
+      }
+      // 执行修改
+      todo.text = text
+    }
+
+    const handleClearCompleted = () => {
+      for (let i = 0; i < todos.value.length; i++) {
+        if (todos.value[i].done) {
+          todos.value.splice(i, 1)
+          i--
+        }
+      }
+    }
+
+    const todosFilter = computed(() => {
+      switch ($route.path) {
+        case '/todo/active':
+          return todos.value.filter(t => !(t as Todo).done)
+        case '/todo/completed':
+          return todos.value.filter(t => (t as Todo).done)
+        default:
+          return todos.value
+      }
+    })
+
     return {
       todos,
-      handleNewTodo
+      toggleAll,
+      handleNewTodo,
+      handleDeleteTodo,
+      handleEditTodo,
+      handleClearCompleted,
+      todosFilter
     }
   }
 })

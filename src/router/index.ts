@@ -115,6 +115,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "todomvc" */ '@/views/todomvc/index.vue')
   },
   {
+    path: '/todo/active',
+    name: 'todoActive',
+    component: () => import(/* webpackChunkName: "todomvc" */ '@/views/todomvc/index.vue')
+  },
+  {
+    path: '/todo/completed',
+    name: 'todoCompleted',
+    component: () => import(/* webpackChunkName: "todomvc" */ '@/views/todomvc/index.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404',
     // redirect: '/404',

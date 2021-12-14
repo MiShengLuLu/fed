@@ -1,16 +1,25 @@
 <template>
-  <li data-testid="todo-item" :class="{ completed: item.done }">
+  <li data-testid="todo-item" :class="{ completed: item.done, editing: isEditing }">
     <div class="view">
       <input data-testid="todo-done" class="toggle" type="checkbox" v-model="item.done" />
-      <label data-testid="todo-text">{{ item.text }}</label>
-      <button class="destroy"></button>
+      <label data-testid="todo-text" @dblclick="isEditing = true">{{ item.text }}</label>
+      <button data-testid="todo-delete" class="destroy" @click="$emit('delete-todo', item.id)"></button>
     </div>
-    <input class="edit" value="Create a TodoMVC template" />
+    <input
+      v-focus="isEditing"
+      data-testid="todo-edit"
+      class="edit"
+      :value="item.text"
+      @blur="isEditing = false"
+      @keyup.enter="handleEditTodo"
+      @keyup.esc="handleCancelEdit"
+    />
   </li>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
+import { Event } from '@/types/todomvc'
 
 export default defineComponent({
   name: 'TodoItem',
@@ -20,16 +29,41 @@ export default defineComponent({
       default: () => ({})
     }
   },
-  computed: {
-    item: function () {
-      return this.todo
+  directives: {
+    focus (element, binding) {
+      if (binding.value) {
+        element.focus()
+      }
+    }
+  },
+  setup (props, { emit }) {
+    const isEditing = ref(false)
+    const item = computed({
+      get: () => {
+        return props.todo
+      },
+      set: () => ({})
+    })
+    const handleEditTodo = (e: Event) => {
+      emit('edit-todo', {
+        id: item.value.id,
+        text: e.target.value
+      })
+      // 取消编辑状态
+      isEditing.value = false
+    }
+
+    const handleCancelEdit = () => {
+      isEditing.value = false
+    }
+
+    return {
+      isEditing,
+      item,
+      handleEditTodo,
+      handleCancelEdit
     }
   }
-  // data () {
-  //   return {
-  //     item: this.todo
-  //   }
-  // }
 })
 </script>
 

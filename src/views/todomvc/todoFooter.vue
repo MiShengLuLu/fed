@@ -2,29 +2,57 @@
   <!-- This footer should be hidden by default and shown when there are todos -->
   <footer class="footer">
     <!-- This should be `0 items left` by default -->
-    <span class="todo-count"><strong>0</strong> item left</span>
+    <span class="todo-count"><strong data-testid="todos-done-count">{{ doneTodosCount }}</strong> item left</span>
     <!-- Remove this if you don't implement routing -->
     <ul class="filters">
       <li>
-        <a class="selected" href="#/">All</a>
+        <a class="selected" href="#/todo">All</a>
       </li>
       <li>
-        <a href="#/active">Active</a>
+        <a href="#/todo/active">Active</a>
       </li>
       <li>
-        <a href="#/completed">Completed</a>
+        <a href="#/todo/completed">Completed</a>
       </li>
     </ul>
     <!-- Hidden if no completed items are left ↓ -->
-    <button class="clear-completed">Clear completed</button>
+    <button
+      v-if="isClearCompletedShow"
+      class="clear-completed"
+      data-testid="clear-complted"
+      @click="$emit('clear-completed')"
+    >Clear completed</button>
   </footer>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { Todo } from '@/types/todomvc'
 
 export default defineComponent({
-  name: 'TodoFooter'
+  name: 'TodoFooter',
+  props: {
+    todos: {
+      type: Array,
+      required: true
+    }
+  },
+  setup (props) {
+    const doneTodosCount = computed(() => {
+      const { todos } = props
+      if (todos.length) {
+        return todos.filter(todo => !(todo as Todo).done).length
+      }
+      return 0
+    })
+
+    const isClearCompletedShow = computed(() => props.todos.find(t => (t as Todo).done))
+
+    return {
+      doneTodosCount,
+      isClearCompletedShow
+    }
+  }
 })
 </script>
 

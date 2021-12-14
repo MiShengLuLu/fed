@@ -7,13 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
-interface Event {
-  target: {
-    value: string;
-    checked: boolean
-  }
-}
+import { Event } from '@/types/todomvc'
 
 export default defineComponent({
   name: 'TodoHeader',
