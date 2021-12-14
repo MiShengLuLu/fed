@@ -1,6 +1,6 @@
 # fed
 
-[![codecov](https://codecov.io/gh/MiShengLuLu/fed/branch/master/graph/badge.svg?token=FR0QZFFPN4)](https://codecov.io/gh/MiShengLuLu/fed)
+[![codecov](https://codecov.io/gh/MiShengLuLu/fed/branch/master/graph/badge.svg?token=FR0QZFFPN4)](https://codecov.io/gh/MiShengLuLu/fed) ![](https://github.com/MiShengLuLu/fed/workflows/Publish%20And%20Deploy%20Fed/badge.svg)
 
 ## Project setup
 ```
