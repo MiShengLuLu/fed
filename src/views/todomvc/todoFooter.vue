@@ -6,13 +6,13 @@
     <!-- Remove this if you don't implement routing -->
     <ul class="filters">
       <li>
-        <a class="selected" href="#/todo">All</a>
+        <router-link exact to="/todo">All</router-link>
       </li>
       <li>
-        <a href="#/todo/active">Active</a>
+        <router-link to="/todo/active">Active</router-link>
       </li>
       <li>
-        <a href="#/todo/completed">Completed</a>
+        <router-link to="/todo/completed">Completed</router-link>
       </li>
     </ul>
     <!-- Hidden if no completed items are left ↓ -->

@@ -11,7 +11,7 @@ describe('todoItem.vue', () => {
       done: true
     }
     wrapper = shallowMount(TodoItem, {
-      propsData: {
+      props: {
         todo
       }
     })

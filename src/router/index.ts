@@ -134,7 +134,8 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
+  linkActiveClass: 'selected'
 })
 
 router.beforeEach((to, from, next) => {
