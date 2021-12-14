@@ -1,5 +1,7 @@
 # fed
 
+[![codecov](https://codecov.io/gh/MiShengLuLu/fed/branch/master/graph/badge.svg?token=FR0QZFFPN4)](https://codecov.io/gh/MiShengLuLu/fed)
+
 ## Project setup
 ```
 yarn install
