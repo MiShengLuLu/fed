@@ -40,10 +40,7 @@ export default defineComponent({
   setup (props) {
     const doneTodosCount = computed(() => {
       const { todos } = props
-      if (todos.length) {
-        return todos.filter(todo => !(todo as Todo).done).length
-      }
-      return 0
+      return todos.filter(todo => !(todo as Todo).done).length
     })
 
     const isClearCompletedShow = computed(() => props.todos.find(t => (t as Todo).done))

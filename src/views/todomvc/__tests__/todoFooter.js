@@ -106,4 +106,9 @@ describe('TodoFooter.vue', () => {
   //     }
   //   }
   // })
+
+  // 快照测试
+  test('snapshot', () => {
+    expect(wrapper.html()).toMatchSnapshot()
+  })
 })

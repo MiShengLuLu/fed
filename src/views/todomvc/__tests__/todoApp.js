@@ -130,4 +130,9 @@ describe('todoApp.vue', () => {
     // 将路由导航到 /todo/completed
     // 断言：todosFilter = 已完成的任务列表
   })
+
+  // 快照测试
+  test('snapshot', () => {
+    expect(wrapper.html()).toMatchSnapshot()
+  })
 })

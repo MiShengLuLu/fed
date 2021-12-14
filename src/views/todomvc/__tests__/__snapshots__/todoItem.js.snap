@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`todoItem.vue snapshot 1`] = `
+<li data-testid="todo-item" class="completed">
+  <div class="view"><input data-testid="todo-done" class="toggle" type="checkbox"><label data-testid="todo-text">JavaScript</label><button data-testid="todo-delete" class="destroy"></button></div><input data-testid="todo-edit" class="edit">
+</li>
+`;
