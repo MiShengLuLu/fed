@@ -45,7 +45,7 @@ describe('TodoFooter.vue', () => {
   })
 
   test('Clear Completed Show', async () => {
-    const clearBtn = wrapper.find('[data-testid="clear-complted"]')
+    const clearBtn = wrapper.find('[data-testid="clear-completed"]')
     expect(clearBtn.exists()).toBeTruthy()
 
     // 清除所有完成任务，断言：clearBtn 不存在
@@ -58,11 +58,11 @@ describe('TodoFooter.vue', () => {
         ]
       }
     })
-    expect(wrapper.find('[data-testid="clear-complted"]').exists()).toBeFalsy()
+    expect(wrapper.find('[data-testid="clear-completed"]').exists()).toBeFalsy()
   })
 
   test('Clear Completed', async () => {
-    const clearBtn = wrapper.find('[data-testid="clear-complted"]')
+    const clearBtn = wrapper.find('[data-testid="clear-completed"]')
     clearBtn.trigger('click')
     expect(wrapper.emitted()['clear-completed']).toBeTruthy()
   })

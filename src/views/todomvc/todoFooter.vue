@@ -6,20 +6,20 @@
     <!-- Remove this if you don't implement routing -->
     <ul class="filters">
       <li>
-        <router-link exact to="/todo">All</router-link>
+        <router-link data-testid="link-all" exact to="/todo">All</router-link>
       </li>
       <li>
-        <router-link to="/todo/active">Active</router-link>
+        <router-link data-testid="link-active" to="/todo/active">Active</router-link>
       </li>
       <li>
-        <router-link to="/todo/completed">Completed</router-link>
+        <router-link data-testid="link-completed" to="/todo/completed">Completed</router-link>
       </li>
     </ul>
     <!-- Hidden if no completed items are left ↓ -->
     <button
       v-if="isClearCompletedShow"
       class="clear-completed"
-      data-testid="clear-complted"
+      data-testid="clear-completed"
       @click="$emit('clear-completed')"
     >Clear completed</button>
   </footer>

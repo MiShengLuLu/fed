@@ -6,14 +6,14 @@ exports[`TodoFooter.vue snapshot 1`] = `
   <!-- This should be \`0 items left\` by default --><span class="todo-count"><strong data-testid="todos-done-count">1</strong> item left</span><!-- Remove this if you don't implement routing -->
   <ul class="filters">
     <li>
-      <router-link exact="" to="/todo">All</router-link>
+      <router-link data-testid="link-all" exact="" to="/todo">All</router-link>
     </li>
     <li>
-      <router-link to="/todo/active">Active</router-link>
+      <router-link data-testid="link-active" to="/todo/active">Active</router-link>
     </li>
     <li>
-      <router-link to="/todo/completed">Completed</router-link>
+      <router-link data-testid="link-completed" to="/todo/completed">Completed</router-link>
     </li>
-  </ul><!-- Hidden if no completed items are left ↓ --><button class="clear-completed" data-testid="clear-complted">Clear completed</button>
+  </ul><!-- Hidden if no completed items are left ↓ --><button class="clear-completed" data-testid="clear-completed">Clear completed</button>
 </footer>
 `;
