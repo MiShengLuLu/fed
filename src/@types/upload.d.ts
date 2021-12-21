@@ -1,5 +1,3 @@
-import request from '@/utils/request'
-
 export interface AliyunVideoUpload {
   fileName: string;
   imageUrl: string

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils'
 import TodoFooter from '../todoFooter.vue'
-import { createRouter, useRouter } from 'vue-router'
-import { nextTick } from 'vue'
+// import { createRouter, useRouter } from 'vue-router'
+// import { nextTick } from 'vue'
 
 // jest.mock('vue-router', () => ({
 //   useRoute: jest.fn(),

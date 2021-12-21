@@ -8,13 +8,13 @@
     @finish="handleFinish"
   >
     <a-form-item has-feedback label="手机号" name="phone">
-      <a-input v-model:value="formState.phone" type="text" autocomplete="off" />
+      <a-input data-testid="phone" v-model:value="formState.phone" type="text" autocomplete="off" />
     </a-form-item>
     <a-form-item has-feedback label="密码" name="password">
-      <a-input v-model:value="formState.password" type="password" autocomplete="off" />
+      <a-input data-testid="password" v-model:value="formState.password" type="password" autocomplete="off" />
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-      <a-button type="primary" html-type="submit" :loading="loading">登 陆</a-button>
+      <a-button data-testid="submit" type="primary" html-type="submit" :loading="loading">登 陆</a-button>
     </a-form-item>
   </a-form>
 </template>

@@ -10,7 +10,7 @@ jest.mock('vue-router', () => ({
   // }))
 }))
 
-const linkActiveClass = 'selected'
+// const linkActiveClass = 'selected'
 // const router = createRouter({
 //   history: createWebHashHistory(),
 //   routes: [
@@ -294,7 +294,6 @@ describe('编辑任务', () => {
     await nextTick()
 
     const todoText = wrapper.find('[data-testid="todo-text"]')
-    const todoItem = wrapper.find('[data-testid="todo-item"]')
     const todoEdit = wrapper.find('[data-testid="todo-edit"]')
 
     // 双击任务项文本获得编辑状态
